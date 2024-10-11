@@ -12,6 +12,30 @@ exports.getProducts = (req, res) => {
   })
 }
 
+exports.setSpecial = (req, res) => {
+  ProductsModel.setSpecial(req, (err, user) => {
+    if (err) {
+      user.message = "Set Special- Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Set Special - Success";
+    res.send(user);
+  })
+}
+
+exports.getSpecialId = (req, res) => {
+  ProductsModel.getSpecialId(req, (err, special) => {
+    if (err) {
+      special.message = "Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    special.message = "Success";
+    res.send(special);
+  })
+}
+
 exports.setProductSpecial = (req, res) => {
   ProductsModel.setProductSpecial(req, (err, user) => {
     if (err) {
@@ -27,12 +51,36 @@ exports.setProductSpecial = (req, res) => {
 exports.getProductSpecials = (req, res) => {
   ProductsModel.getProductSpecials((err, user) => {
     if (err) {
-      user.message = "Failed";
+      user.message = "Get Active Product Specials - Failed";
       res.send(err);
       process.exit(1);
     }
-    user.message = "Success";
+    user.message = "Get Active Product Specials - Success";
     res.send(user);
+  })
+}
+
+exports.getUpcomingProductSpecials = (req, res) => {
+  ProductsModel.getUpcomingProductSpecials((err, specials) => {
+    if (err) {
+      specials.message = "Get Upcoming Product Specials - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    specials.message = "Get Upcoming Product Specials - Success";
+    res.send(specials);
+  })
+}
+
+exports.getUpcomingGroupSpecials = (req, res) => {
+  ProductsModel.getUpcomingGroupSpecials((err, specials) => {
+    if (err) {
+      specials.message = "Get Upcoming Group Specials - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    specials.message = "Get Upcoming Group Specials - Success";
+    res.send(specials);
   })
 }
 

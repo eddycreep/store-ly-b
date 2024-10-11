@@ -41,9 +41,33 @@ Products.getProducts = (result) => {
     })
 }
 
+Products.setSpecial = (req, result) => {
+    const { special, specialType, storeId, startDate, expiryDate, specialValue, isactive } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblspecialssss (special, special_type, store_id, start_date, expiry_date, special_value, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [special, specialType, storeId, startDate, expiryDate, specialValue, isactive], (err, res) => {
+        if (err) {
+            console.log('Error while adding the Special:' + err);
+            result(err, null);
+        } else {
+            console.log('Adding the Special was Successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+Products.getSpecialId = (req, result) => {
+    dbConn.query('SELECT special_id FROM store_loyalty.tblspecialssss WHERE special = ? AND special_type = ? AND store_id = ? AND special_value = ?', [req.params.special, req.params.special_type, req.params.store_id, req.params.special_value], (err, res) => {
+        if (err) {
+            console.log('Error while getting the special id' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
 Products.setProductSpecial = (req, result) => {
-    const { product, specialDescription, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
-    dbConn.query('insert into store_loyalty.tblproductspecial(Product, SpecialDescription, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive)values(?, ?, ?, ?, ?, ?, ?)', [product, specialDescription, specialPrice, specialType, startDate, expiryDate, isActive], (err, res) => {
+    const { specialid, productdescription, specialprice } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblspecialitems(special_id, product_description, special_price)VALUES(?, ?, ?)', [specialid, productdescription, specialprice], (err, res) => {
         if (err) {
             console.log('Error while adding the Products special:' + err);
             result(err, null);
@@ -55,15 +79,39 @@ Products.setProductSpecial = (req, result) => {
 }
 
 Products.getProductSpecials = (result) => {
-    dbConn.query('SELECT d.ProductID, d.DiscountName, d.StartDate, d.EndDate, d.DiscountValue, d.DiscountTier, p.ProductName, p.Price FROM store_loyalty.tbldiscount d JOIN store_loyalty.tblproduct p ON d.ProductID = p.ProductID', (err, res) => {
-        if (!(err === null)) {
-            console.log('Error while getting all products discounts' + err);
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1`, (err, res) => {
+        if (err) {
+            console.log('Error while getting all active products specials' + err);
             result(null, err);
         } else {
             result(null, res);
         }
     })
 }
+
+Products.getUpcomingProductSpecials = (result) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND  STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+        if (err) {
+            console.log('Error while getting all upcoming products specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
+
+Products.getUpcomingGroupSpecials = (result) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+        if (err) {
+            console.log('Error while getting all active products specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
 
 //take button in loggedTickets table
 Products.setProductGroupSpecial = (req, result) => {
@@ -80,9 +128,9 @@ Products.setProductGroupSpecial = (req, result) => {
 }
 
 Products.getProductGroupSpecials = (result) => {
-    dbConn.query('SELECT ps.ProductID, ps.SpecialName, ps.SpecialValue, ps.StartDate, ps.ExpiryDate, ps.IsActive, p.ProductName, p.Price FROM store_loyalty.tblproductspecial ps JOIN store_loyalty.tblproduct p ON ps.ProductID = p.ProductID', (err, res) => {
+    dbConn.query('SELECT uid, SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, IsActive FROM store_loyalty.tblproductgroupspecial WHERE IsActive = 1', (err, res) => {
         if (!(err === null)) {
-            console.log('Error while getting all products specials' + err);
+            console.log('Error while getting all Product Group Specials' + err);
             result(null, err);
         } else {
             result(null, res);
