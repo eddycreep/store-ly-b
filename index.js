@@ -31,8 +31,12 @@ app.use('/user', UserRoutes);
 const ProductRoutes = require('./src/routes/products.route')
 app.use('/products', ProductRoutes);
 
-// const CheckinRoutes = require('./src/routes/checkin.route')
-// app.use('/checkin', CheckinRoutes);
+const AdminRoutes = require('./src/routes/admin.route')
+app.use('/admin', AdminRoutes);
+
+const ReportsRoutes = require('./src/routes/reports.route')
+app.use('/reports', ReportsRoutes);
+
 
 // listen to the port
 app.listen(port, () => {
