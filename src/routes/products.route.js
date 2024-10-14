@@ -14,9 +14,10 @@ router.post('/setproductspecial', ProductsController.setProductSpecial); //SET T
 router.get('/getproductspecials', ProductsController.getProductSpecials);
 router.get('/getupcomingproductspecials', ProductsController.getUpcomingProductSpecials);
 
-router.get('/getactivegroupspecials', ProductsController.getUpcomingGroupSpecials); //GET UPCOMING GROUP SPECIALS
+router.get('/getactivegroupspecials', ProductsController.getActiveGroupSpecials); //GET ACTIVE GROUP SPECIALS
+router.get('/getupcomingroupspecials', ProductsController.getUpcomingGroupSpecials); //GET UPCOMING GROUP SPECIALS
 
 router.post('/setproductgpspecial', ProductsController.setProductGroupSpecial); //SET THE PRODUCTS LINKED TO THE GROUP SPECIAL
-router.get('/getproductgpspecials', ProductsController.getProductGroupSpecials);
+router.get('/getallgroupspecials', ProductsController.getAllGroupSpecials);
 
 module.exports = router;

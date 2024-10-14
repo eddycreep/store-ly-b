@@ -72,6 +72,18 @@ exports.getUpcomingProductSpecials = (req, res) => {
   })
 }
 
+exports.getActiveGroupSpecials = (req, res) => {
+  ProductsModel.getActiveGroupSpecials((err, specials) => {
+    if (err) {
+      specials.message = "Get Active Group Specials - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    specials.message = "Get Active Group Specials - Success";
+    res.send(specials);
+  })
+}
+
 exports.getUpcomingGroupSpecials = (req, res) => {
   ProductsModel.getUpcomingGroupSpecials((err, specials) => {
     if (err) {
@@ -96,8 +108,8 @@ exports.setProductGroupSpecial = (req, res) => {
   })
 }
 
-exports.getProductGroupSpecials = (req, res) => {
-  ProductsModel.getProductGroupSpecials((err, user) => {
+exports.getAllGroupSpecials = (req, res) => {
+  ProductsModel.getAllGroupSpecials((err, user) => {
     if (err) {
       user.message = "Failed";
       res.send(err);
