@@ -123,6 +123,31 @@ Products.getUpcomingGroupSpecials = (result) => {
 }
 
 
+Products.updateGroupSpecial = (req, result) => {
+    const { special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
+    dbConn.query(`UPDATE store_loyalty.tblspecialssss SET special = ?, special_type = ?, store_id = ?, start_date = ?, expiry_date = ?, special_value = ?, isActive = ? WHERE special_id = ?`, [special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
+        if (err) {
+            console.log('Error while getting all upcoming product group specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
+
+Products.updateGroupSpecialProduct = (req, result) => {
+    const { product_description, special_price } = req.body;
+    dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [product_description, special_price], (err, res) => {
+        if (err) {
+            console.log('Error while updating the Group Product x Price' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
 //take button in loggedTickets table
 Products.setProductGroupSpecial = (req, result) => {
     const { specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
