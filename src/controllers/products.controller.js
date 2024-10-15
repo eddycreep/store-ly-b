@@ -96,6 +96,32 @@ exports.getUpcomingGroupSpecials = (req, res) => {
   })
 }
 
+
+exports.updateGroupSpecial = (req, res) => {
+  ProductsModel.updateGroupSpecial(req, (err, special) => {
+    if (err) {
+      special.message = "Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    special.message = "Success";
+    res.send(special);
+  })
+}
+
+
+exports.updateGroupSpecialProduct = (req, res) => {
+  ProductsModel.updateGroupSpecialProduct(req, (err, special) => {
+    if (err) {
+      special.message = "Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    special.message = "Success";
+    res.send(special);
+  })
+}
+
 exports.setProductGroupSpecial = (req, res) => {
   ProductsModel.setProductGroupSpecial(req, (err, employee) => {
     if (err) {
