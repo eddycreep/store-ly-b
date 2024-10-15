@@ -90,7 +90,7 @@ Products.getProductSpecials = (result) => {
 }
 
 Products.getUpcomingProductSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND  STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all upcoming products specials' + err);
             result(null, err);
@@ -100,11 +100,21 @@ Products.getUpcomingProductSpecials = (result) => {
     })
 }
 
+Products.getActiveGroupSpecials = (result) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') <= CURDATE() AND STR_TO_DATE(sp.expiry_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+        if (err) {
+            console.log('Error while getting all active product group specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
 
 Products.getUpcomingGroupSpecials = (result) => {
     dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
         if (err) {
-            console.log('Error while getting all active products specials' + err);
+            console.log('Error while getting all upcoming product group specials' + err);
             result(null, err);
         } else {
             result(null, res);
@@ -127,8 +137,8 @@ Products.setProductGroupSpecial = (req, result) => {
     });
 }
 
-Products.getProductGroupSpecials = (result) => {
-    dbConn.query('SELECT uid, SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, IsActive FROM store_loyalty.tblproductgroupspecial WHERE IsActive = 1', (err, res) => {
+Products.getAllGroupSpecials = (result) => {
+    dbConn.query('SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = "Combined Special"', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting all Product Group Specials' + err);
             result(null, err);
