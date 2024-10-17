@@ -37,6 +37,7 @@ app.use('/admin', AdminRoutes);
 const ReportsRoutes = require('./src/routes/reports.route')
 app.use('/reports', ReportsRoutes);
 
+console.log('SERVERPORT:', process.env.SERVERPORT);  // Debugging line4
 
 // listen to the port
 app.listen(port, () => {

@@ -23,4 +23,7 @@ router.patch('/updategroupspecialproduct/:special_id', ProductsController.update
 router.post('/setproductgpspecial', ProductsController.setProductGroupSpecial); //SET THE PRODUCTS LINKED TO THE GROUP SPECIAL
 router.get('/getallgroupspecials', ProductsController.getAllGroupSpecials);
 
+//REWARDS
+router.post('/setreward', ProductsController.setReward); //SET THE PRODUCTS LINKED TO THE GROUP SPECIAL
+
 module.exports = router;
