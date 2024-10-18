@@ -1,26 +1,20 @@
 const mysql = require('mysql2');
-require('dotenv').config({ path: './configuration.env' });
+require('dotenv').config({ path: '../configuration.env' });
 
 const dbConn = mysql.createConnection({
-    host: 'localhost',
-    port: '3306',
-    user: 'root',
-    password: 'Legend1501',
-    database: 'store_loyalty'
+    host: process.env.HOST,
+    port: process.env.PORT,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
+    ssl: false
 });
 
-// PORT = 3306
-// HOST = localhost
-// USER = root
-// PASSWORD = Legend1501
-// DATABASE = store_loyalty
-
 dbConn.connect(function (error) {
-    // console.log('HOST:', process.env.HOST);
-    // console.log('USER:', process.env.PORT);
-    // console.log('HOST:', process.env.USER);
-    // console.log('USER:', process.env.PASSWORD);
-    // console.log('USER:', process.env.DATABASE);
+    console.log('HOST:', process.env.HOST);
+    console.log('PORT:', process.env.PORT);
+    console.log('USER:', process.env.USER);
+    console.log('PASSWORD:', process.env.PASSWORD);
+    console.log('DATABASE', process.env.DATABASE);
 
     if (error) {
         console.error('error connecting:' + error.stack);

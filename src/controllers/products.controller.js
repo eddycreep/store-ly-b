@@ -145,3 +145,15 @@ exports.getAllGroupSpecials = (req, res) => {
     res.send(user);
   })
 }
+
+exports.setReward = (req, res) => {
+  ProductsModel.setReward(req, (err, employee) => {
+    if (err) {
+      employee.message = "Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    employee.message = "Success";
+    res.send(employee);
+  })
+}

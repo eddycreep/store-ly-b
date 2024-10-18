@@ -173,5 +173,18 @@ Products.getAllGroupSpecials = (result) => {
     })
 }
 
+Products.setReward = (req, result) => {
+    const { rewardTitle, description, expiryDate, reward, rewardType, rewardPrice, isActive } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblrewards (reward_title, description, expiry_date, reward, reward_type, reward_price, isActive)VALUES(?, ?, ?, ?, ?, ?, ?)', [ rewardTitle, description, expiryDate, reward, rewardType, rewardPrice, isActive ], (err, res) => {
+        if (err) {
+            console.log('Error while adding the Alternative Rewads:' + err);
+            result(err, null);
+        } else {
+            console.log('Adding the ALternative Rewads was successful:', res);
+            result(null, res);
+        }
+    });
+}
+
 module.exports = Products;
 
