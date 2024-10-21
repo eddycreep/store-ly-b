@@ -79,7 +79,7 @@ Products.setProductSpecial = (req, result) => {
 }
 
 Products.getProductSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1`, (err, res) => {
         if (err) {
             console.log('Error while getting all active products specials' + err);
             result(null, err);
