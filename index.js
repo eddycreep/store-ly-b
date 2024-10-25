@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const swaggerDocs = require('./src/utils/swagger.ts');
 
 const corsOptions = {
     origin: '*',
@@ -42,4 +43,7 @@ console.log('SERVERPORT:', process.env.SERVERPORT);  // Debugging line4
 // listen to the port
 app.listen(port, () => {
     console.log(`Express is running at port ${port}`);
+
+    // Initialize Swagger documentation
+    swaggerDocs(app, port)
 });
