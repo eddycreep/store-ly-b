@@ -163,7 +163,7 @@ Products.setProductGroupSpecial = (req, result) => {
 }
 
 Products.getAllGroupSpecials = (result) => {
-    dbConn.query('SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = "Combined Special"', (err, res) => {
+    dbConn.query('SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = "Combined Special"', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting all Product Group Specials' + err);
             result(null, err);
