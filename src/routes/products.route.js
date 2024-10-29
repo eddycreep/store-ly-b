@@ -14,20 +14,18 @@ const app = express();
  * /healthcheck:
  *   get:
  *     tag:
- *       - Healthcheck
+ *      - Healthcheck
  *     description: Responds if the app is up and running
  *     responses:
  *       200:
  *         description: App is up and running
  */
-app.get('/healthcheck', (req, res) => res.sendStatus(200));
+router.get('/healthcheck', (req, res) => res.sendStatus(200));
 
 router.get('/getproducts', ProductsController.getProducts); 
 
-//router.post('/setspecial', ProductsController.setSpecial); //SET THE SPECIAL
 router.get('/getspecialid/:special/:special_type/:store_id/:special_value', ProductsController.getSpecialId); //GET special id 
 
-//router.post('/setproductspecial', ProductsController.setProductSpecial); //SET THE PRODUCT LINKED TO THE SPECIAL 
 router.get('/getproductspecials', ProductsController.getProductSpecials);
 router.get('/getupcomingproductspecials', ProductsController.getUpcomingProductSpecials);
 
@@ -37,7 +35,6 @@ router.get('/getupcomingroupspecials', ProductsController.getUpcomingGroupSpecia
 router.patch('/updategroupspecial/:special_id', ProductsController.updateGroupSpecial); //update special - tblspecials
 router.patch('/updategroupspecialproduct/:special_id', ProductsController.updateGroupSpecialProduct); //update special product x price - tblspecials_combinedgroup
 
-//router.post('/setproductgpspecial', ProductsController.setProductGroupSpecial); //SET THE PRODUCTS LINKED TO THE GROUP SPECIAL
 router.get('/getallgroupspecials', ProductsController.getAllGroupSpecials);
 
 //REWARDS
