@@ -13,31 +13,56 @@ const app = express();
  * @openapi
  * /healthcheck:
  *   get:
- *     tag:
+ *     tags:
  *      - Healthcheck
  *     description: Responds if the app is up and running
  *     responses:
  *       200:
  *         description: App is up and running
  */
-router.get('/healthcheck', (req, res) => res.sendStatus(200));
+router.get('/healthcheck', (req, res) => res.send("Hello, world!"));
 
+
+/**
+ * @openapi
+ * /getproducts:
+ *   get:
+ *     tags:
+ *      - Products
+ *     description: Gets a list of products
+ *     requestBody:
+ *      contents:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/GetProductData'
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *          application/json:
+ *              schema:
+ *                  $ref: '#/components/schemas/GetProductResponse'
+ *       409:
+ *         description: Conflict
+ *       400:
+ *         description: Bad Request
+ */
 router.get('/getproducts', ProductsController.getProducts); 
 
-router.get('/getspecialid/:special/:special_type/:store_id/:special_value', ProductsController.getSpecialId); //GET special id 
-
-router.get('/getproductspecials', ProductsController.getProductSpecials);
+router.get('/getproductspecials', ProductsController.getProductSpecials); //individual
 router.get('/getupcomingproductspecials', ProductsController.getUpcomingProductSpecials);
 
-router.get('/getactivegroupspecials', ProductsController.getActiveGroupSpecials); //GET ACTIVE GROUP SPECIALS
-router.get('/getupcomingroupspecials', ProductsController.getUpcomingGroupSpecials); //GET UPCOMING GROUP SPECIALS
+router.get('/getactivegroupspecials', ProductsController.getActiveGroupSpecials); //combined
+router.get('/getupcomingroupspecials', ProductsController.getUpcomingGroupSpecials); 
 
-router.patch('/updategroupspecial/:special_id', ProductsController.updateGroupSpecial); //update special - tblspecials
-router.patch('/updategroupspecialproduct/:special_id', ProductsController.updateGroupSpecialProduct); //update special product x price - tblspecials_combinedgroup
-
+//all specials
+router.get('/getallproductspecials', ProductsController.getAllProductSpecials);
 router.get('/getallgroupspecials', ProductsController.getAllGroupSpecials);
 
-//REWARDS
-router.post('/setreward', ProductsController.setReward); //SET THE PRODUCTS LINKED TO THE GROUP SPECIAL
+//rewards
+router.get('/getactiverewards', ProductsController.getActiveRewards);
+
+//surveys
+router.get('/getactivesurveys', ProductsController.getActiveSurveys)
 
 module.exports = router;

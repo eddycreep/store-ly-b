@@ -24,18 +24,6 @@ exports.setSpecial = (req, res) => {
   })
 }
 
-exports.getSpecialId = (req, res) => {
-  ProductsModel.getSpecialId(req, (err, special) => {
-    if (err) {
-      special.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    special.message = "Success";
-    res.send(special);
-  })
-}
-
 exports.setProductSpecial = (req, res) => {
   ProductsModel.setProductSpecial(req, (err, user) => {
     if (err) {
@@ -96,43 +84,18 @@ exports.getUpcomingGroupSpecials = (req, res) => {
   })
 }
 
-
-exports.updateGroupSpecial = (req, res) => {
-  ProductsModel.updateGroupSpecial(req, (err, special) => {
+exports.getAllProductSpecials = (req, res) => {
+  ProductsModel.getAllProductSpecials((err, user) => {
     if (err) {
-      special.message = "Failed";
+      user.message = "Failed";
       res.send(err);
       process.exit(1);
     }
-    special.message = "Success";
-    res.send(special);
+    user.message = "Success";
+    res.send(user);
   })
 }
 
-
-exports.updateGroupSpecialProduct = (req, res) => {
-  ProductsModel.updateGroupSpecialProduct(req, (err, special) => {
-    if (err) {
-      special.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    special.message = "Success";
-    res.send(special);
-  })
-}
-
-exports.setProductGroupSpecial = (req, res) => {
-  ProductsModel.setProductGroupSpecial(req, (err, employee) => {
-    if (err) {
-      employee.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    employee.message = "Success";
-    res.send(employee);
-  })
-}
 
 exports.getAllGroupSpecials = (req, res) => {
   ProductsModel.getAllGroupSpecials((err, user) => {
@@ -146,14 +109,26 @@ exports.getAllGroupSpecials = (req, res) => {
   })
 }
 
-exports.setReward = (req, res) => {
-  ProductsModel.setReward(req, (err, employee) => {
+exports.getActiveRewards = (req, res) => {
+  ProductsModel.getActiveRewards((err, employee) => {
     if (err) {
-      employee.message = "Failed";
+      employee.message = "Fetching Active Rewards - Failed";
       res.send(err);
       process.exit(1);
     }
-    employee.message = "Success";
+    employee.message = "Fetching Active Rewards - Success";
     res.send(employee);
+  })
+}
+
+exports.getActiveSurveys = (req, res) => {
+  ProductsModel.getActiveSurveys((err, user) => {
+      if (err) {
+          user.message = "Fetching Active Surveys - Failed";
+          res.send(err);
+          process.exit(1);
+      }
+          user.message = "Fetching Active Surveys - Success";
+          res.send(user);
   })
 }

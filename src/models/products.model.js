@@ -30,8 +30,51 @@ var Products = function (user) {
 
 }; 
 
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetProductData:
+ *          type: array
+ *          required:
+ *              - uid
+ *              - item_code
+ *              - selling_incl_1
+ *              - special_price_incl
+ *              - description_1
+ *          properties:
+ *              uid:
+ *                  type: number
+ *                  default: 1
+ *              item_code:
+ *                  type: string
+ *                  default: P001
+ *              selling_incl_1:
+ *                  type: number
+ *                  default: 25.99
+ *              special_price_incl:
+ *                  type: number
+ *                  default: 20.99
+ *              description_1:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *      GetProductResponse:
+ *          type: array
+ *          properties:
+ *              uid:
+ *                  type: number
+ *              item_code:
+ *                  type: string
+ *              selling_incl_1:
+ *                  type: number
+ *              special_price_incl:
+ *                  type: number
+ *              description_1:
+ *                  type: string
+ */
 Products.getProducts = (result) => {
-    dbConn.query('SELECT idx, Stockcode, Product_Description, Category, DepNum, SubNum, Soh, VarPrc, VatPerc, Discount, ExclCost, Markup, GPPerc, ExclSell, ExclSell2, ExclSell3, Markup2, GPPerc2, Markup3, GPPerc3, IncSell, IncSell2, ROS, Discount_Expiry, Special, Special_ExpiryDate, Client_ID, Product_Image FROM store_loyalty.tblproducts', (err, res) => {
+    dbConn.query('SELECT mst.item_code, mst.selling_incl_1, mst.special_price_incl, inv.description_1 FROM store_loyalty.tblmultistoretrn mst JOIN store_loyalty.tblinventory inv ON mst.item_code = inv.item_code', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting all products ' + err);
             result(null, err);
@@ -52,17 +95,6 @@ Products.setSpecial = (req, result) => {
             result(null, res);
         }
     });
-}
-
-Products.getSpecialId = (req, result) => {
-    dbConn.query('SELECT special_id FROM store_loyalty.tblspecialssss WHERE special = ? AND special_type = ? AND store_id = ? AND special_value = ?', [req.params.special, req.params.special_type, req.params.store_id, req.params.special_value], (err, res) => {
-        if (err) {
-            console.log('Error while getting the special id' + err);
-            result(null, err);
-        } else {
-            result(null, res);
-        }
-    })
 }
 
 Products.setProductSpecial = (req, result) => {
@@ -122,12 +154,10 @@ Products.getUpcomingGroupSpecials = (result) => {
     })
 }
 
-
-Products.updateGroupSpecial = (req, result) => {
-    const { special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecialssss SET special = ?, special_type = ?, store_id = ?, start_date = ?, expiry_date = ?, special_value = ?, isActive = ? WHERE special_id = ?`, [special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
-        if (err) {
-            console.log('Error while getting all upcoming product group specials' + err);
+Products.getAllProductSpecials = (result) => {
+    dbConn.query('SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = "Special"', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all Product Group Specials' + err);
             result(null, err);
         } else {
             result(null, res);
@@ -135,32 +165,6 @@ Products.updateGroupSpecial = (req, result) => {
     })
 }
 
-
-Products.updateGroupSpecialProduct = (req, result) => {
-    const { product_description, special_price } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [product_description, special_price], (err, res) => {
-        if (err) {
-            console.log('Error while updating the Group Product x Price' + err);
-            result(null, err);
-        } else {
-            result(null, res);
-        }
-    })
-}
-
-//take button in loggedTickets table
-Products.setProductGroupSpecial = (req, result) => {
-    const { specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
-    dbConn.query('insert into store_loyalty.tblproductgroupspecial(SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive) values(?, ?, ?, ?, ?, ?, ?, ?)', [specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive ], (err, res) => {
-        if (err) {
-            console.log('Error while adding the Products special:' + err);
-            result(err, null);
-        } else {
-            console.log('Adding the Products special was successful:', res);
-            result(null, res);
-        }
-    });
-}
 
 Products.getAllGroupSpecials = (result) => {
     dbConn.query('SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = "Combined Special"', (err, res) => {
@@ -173,18 +177,28 @@ Products.getAllGroupSpecials = (result) => {
     })
 }
 
-Products.setReward = (req, result) => {
-    const { rewardTitle, description, expiryDate, reward, rewardType, rewardPrice, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblrewards (reward_title, description, expiry_date, reward, reward_type, reward_price, isActive)VALUES(?, ?, ?, ?, ?, ?, ?)', [ rewardTitle, description, expiryDate, reward, rewardType, rewardPrice, isActive ], (err, res) => {
+Products.getActiveRewards = (req, result) => {
+    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
         if (err) {
-            console.log('Error while adding the Alternative Rewads:' + err);
+            console.log('Error while fetching the active Rewards:' + err);
             result(err, null);
         } else {
-            console.log('Adding the ALternative Rewads was successful:', res);
+            console.log('Fetching the active rewards was successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+Products.getActiveSurveys = (req, result) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+        if (err) {
+            console.log('Error while Fetching all Active Surveys:' + err);
+            result(err, null);
+        } else {
+            console.log('Fetching all Active Surveys was Successful:', res);
             result(null, res);
         }
     });
 }
 
 module.exports = Products;
-
