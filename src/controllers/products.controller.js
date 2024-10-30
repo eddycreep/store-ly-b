@@ -97,8 +97,8 @@ exports.getAllProductSpecials = (req, res) => {
 }
 
 
-exports.getAllGroupSpecials = (req, res) => {
-  ProductsModel.getAllGroupSpecials((err, user) => {
+exports.getAllCombinedSpecials = (req, res) => {
+  ProductsModel.getAllCombinedSpecials((err, user) => {
     if (err) {
       user.message = "Failed";
       res.send(err);

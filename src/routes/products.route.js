@@ -57,7 +57,7 @@ router.get('/getupcomingroupspecials', ProductsController.getUpcomingGroupSpecia
 
 //all specials
 router.get('/getallproductspecials', ProductsController.getAllProductSpecials);
-router.get('/getallgroupspecials', ProductsController.getAllGroupSpecials);
+router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials);
 
 //rewards
 router.get('/getactiverewards', ProductsController.getActiveRewards);
