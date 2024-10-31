@@ -112,14 +112,14 @@ exports.deleteSpecial = (req, res) => {
     })
 }
 
-exports.deleteProductSpecial = (req, res) => {
-    AdminModel.deleteProductSpecial(req, (err, special) => {
+exports.deleteSpecialItem = (req, res) => {
+    AdminModel.deleteSpecialItem(req, (err, special) => {
     if (err) {
-        special.message = "Deleting Product Special - Failed";
+        special.message = "Deleting Special Item- Failed";
         res.send(err);
         process.exit(1);
     }
-        special.message = "Deleting Product Special - Success";
+        special.message = "Deleting Special Item- Success";
         res.send(special);
     })
 }
@@ -137,6 +137,19 @@ exports.deleteCombinedSpecialItems = (req, res) => {
 }
 
 //rewards
+exports.getAllRewards = (req, res) => {
+    AdminModel.getAllRewards((err, employee) => {
+    if (err) {
+        employee.message = "Fetching All Rewards - Failed";
+        res.send(err);
+        process.exit(1);
+    }
+        employee.message = "Fetching All Rewards - Success";
+        res.send(employee);
+    })
+}
+
+
 exports.saveReward = (req, res) => {
     AdminModel.saveReward(req, (err, employee) => {
     if (err) {
@@ -172,6 +185,19 @@ exports.deleteReward = (req, res) => {
         res.send(employee);
     })
 }
+
+exports.getAllSurveys = (req, res) => {
+    AdminModel.getAllSurveys((err, user) => {
+        if (err) {
+            user.message = "Fetching All Surveys - Failed";
+            res.send(err);
+            process.exit(1);
+        }
+            user.message = "Fetching All Surveys - Success";
+            res.send(user);
+    })
+}
+
 
 exports.saveSurvey = (req, res) => {
     AdminModel.saveSurvey(req, (err, user) => {

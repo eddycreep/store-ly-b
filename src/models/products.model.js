@@ -110,7 +110,86 @@ Products.setProductSpecial = (req, result) => {
     });
 }
 
-Products.getProductSpecials = (result) => {
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetActiveProductSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetActiveProductSpecialsResponse:
+ *          type: array
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
+Products.getActiveProductSpecials = (result) => {
     dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1`, (err, res) => {
         if (err) {
             console.log('Error while getting all active products specials' + err);
@@ -121,6 +200,85 @@ Products.getProductSpecials = (result) => {
     })
 }
 
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetUpcomingProductSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetUpcomingProductSpecialsResponse:
+ *          type: array
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
 Products.getUpcomingProductSpecials = (result) => {
     dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
         if (err) {
@@ -132,7 +290,7 @@ Products.getUpcomingProductSpecials = (result) => {
     })
 }
 
-Products.getActiveGroupSpecials = (result) => {
+Products.getActiveCombinedSpecials = (result) => {
     dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') <= CURDATE() AND STR_TO_DATE(sp.expiry_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all active product group specials' + err);
@@ -143,7 +301,7 @@ Products.getActiveGroupSpecials = (result) => {
     })
 }
 
-Products.getUpcomingGroupSpecials = (result) => {
+Products.getUpcomingCombinedSpecials = (result) => {
     dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all upcoming product group specials' + err);
@@ -154,6 +312,85 @@ Products.getUpcomingGroupSpecials = (result) => {
     })
 }
 
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetProductSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetProductSpecialsResponse:
+ *          type: array
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
 Products.getAllProductSpecials = (result) => {
     dbConn.query('SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = "Special"', (err, res) => {
         if (!(err === null)) {
@@ -165,7 +402,90 @@ Products.getAllProductSpecials = (result) => {
     })
 }
 
-
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetCombiniedSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - special_group_id
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              special_group_id:
+ *                  type: number
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetCombiniedSpecialsResponse: 
+ *          type: array
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              special_group_id:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
 Products.getAllCombinedSpecials = (result) => {
     dbConn.query('SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = "Combined Special"', (err, res) => {
         if (!(err === null)) {
@@ -176,6 +496,51 @@ Products.getAllCombinedSpecials = (result) => {
         }
     })
 }
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ActiveRewardResponse:
+ *       type: object
+ *       properties:
+ *         uid:
+ *           type: integer
+ *           description: Unique identifier for the reward
+ *         reward_title:
+ *           type: string
+ *           description: Title of the reward
+ *         description:
+ *           type: string
+ *           description: Detailed description of the reward
+ *         reward:
+ *           type: string
+ *           description: Reward item or benefit
+ *         reward_type:
+ *           type: string
+ *           description: Type/category of the reward
+ *         reward_price:
+ *           type: number
+ *           format: float
+ *           description: Price or cost associated with the reward
+ *         store_id:
+ *           type: integer
+ *           description: Identifier for the store offering the reward
+ *         region:
+ *           type: string
+ *           description: Region where the reward is available
+ *         start_date:
+ *           type: string
+ *           format: date
+ *           description: Start date of the reward availability
+ *         expiry_date:
+ *           type: string
+ *           format: date
+ *           description: Expiry date of the reward availability
+ *         isActive:
+ *           type: boolean
+ *           description: Status of the reward (1 for active, 0 for inactive)
+ */
 
 Products.getActiveRewards = (req, result) => {
     dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
@@ -190,7 +555,7 @@ Products.getActiveRewards = (req, result) => {
 }
 
 Products.getActiveSurveys = (req, result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Active Surveys:' + err);
             result(err, null);
@@ -199,6 +564,263 @@ Products.getActiveSurveys = (req, result) => {
             result(null, res);
         }
     });
+}
+
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetStoreData:
+ *          type: array
+ *          required:
+ *              - id
+ *              - code 
+ *              - description 
+ *              - address_1, 
+ *              - address_2,
+ *              - address_3,
+ *              - address_4,
+ *              - address_5,
+ *              - address_6,
+ *              - address_7,
+ *          properties:
+ *              id:
+ *                  type: number
+ *                  default: 1
+ *              code:
+ *                  type: string
+ *                  default: S001
+ *              description:
+ *                  type: string
+ *                  default: PLUS DC Stellenbosch
+ *              address_1:
+ *                  type: string
+ *                  default: 123 Vineyard Rd
+ *              address_2:
+ *                  type: string
+ *                  default: Unit 12
+ *              address_3:
+ *                  type: string
+ *                  default: Stellenbosch
+ *              address_4:
+ *                  type: string
+ *                  default: Western Cape
+ *              address_5:
+ *                  type: number
+ *                  default: 7600
+ *              address_6:
+ *                  type: string
+ *                  default: South Africa
+ *      GetStoreResponse:
+ *          type: array
+ *          properties:
+ *              id:
+ *                  type: number
+ *              code:
+ *                  type: string
+ *              description:
+ *                  type: string
+ *              address_1:
+ *                  type: string
+ *              address_2:
+ *                  type: string
+ *              address_3:
+ *                  type: string
+ *              address_4:
+ *                  type: string
+ *              address_5:
+ *                  type: number
+ *              address_6:
+ *                  type: string
+ */
+Products.getStores = (result) => {
+    dbConn.query('SELECT id, code, description, address_1, address_2, address_3, address_4, address_5, address_6  FROM store_loyalty.tblmultistore', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all stores ' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetCustomerData:
+ *          type: array
+ *          required:
+ *              - ID  
+ *              - Code
+ *              - Description
+ *              - Address01
+ *              - Address02
+ *              - Address03
+ *              - Address04
+ *              - Address05
+ *              - Address06
+ *              - Address07
+ *              - birth_day
+ *          properties:
+ *              ID:
+ *                  type: number 
+ *                  default: 1
+ *              Code:   
+ *                  type: string  
+ *                  default: CUST006
+ *              Description:
+ *                  type: string
+ *                  default: Olivia Garcia
+ *              Address01:
+ *                  type: string
+ *                  default: 543 Aloe Ave
+ *              Address02:
+ *                  type: number
+ *                  default: Unit 22
+ *              Address03:
+ *                  type: string
+ *                  default: Port Elizabeth
+ *              Address04:
+ *                  type: string
+ *                  default: Eastern Cape
+ *              Address05:
+ *                  type: string
+ *                  default: 6001
+ *              Address06:
+ *                  type: string
+ *                  default: South Africa
+ *              Address07:
+ *                  type: string
+ *                  default: oliviagarcia@gmail.com
+ *              birth_day:
+ *                  type: string
+ *                  default: 1995-09-12
+ *      GetCustomerResponse:
+ *          type: array
+ *          properties:
+ *              ID:
+ *                  type: number 
+ *              Code:   
+ *                  type: string  
+ *              Description:
+ *                  type: string
+ *              Address01:
+ *                  type: string
+ *              Address02:
+ *                  type: number
+ *              Address03:
+ *                  type: string
+ *              Address04:
+ *                  type: string
+ *              Address05:
+ *                  type: string
+ *              Address06:
+ *                  type: string
+ *              Address07:
+ *                  type: string
+ *              birth_day:
+ *                  type: string
+ */
+Products.getCustomers = (result) => {
+    dbConn.query('SELECT ID, Code, Description, Address01, Address02, Address03, Address04, Address05, Address06, Address07, birth_day FROM store_loyalty.tblcustomers', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all customers ' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetLoyaltyCustomerData:
+ *          type: array
+ *          required:
+ *              - CustomerID
+ *              - FirstName 
+ *              - LastName 
+ *              - MobileNumber, 
+ *              - Age,
+ *              - Gender,
+ *              - Birthday,
+ *              - Ethnicity,
+ *              - EmploymentStatus,
+ *              - Email,
+ *              - LoyaltyTier,
+ *          properties:
+ *              CustomerID:
+ *                  type: number
+ *                  default: 1
+ *              FirstName:
+ *                  type: string
+ *                  default: Jane
+ *              LastName:
+ *                  type: string
+ *                  default: Doe
+ *              MobileNumber:
+ *                  type: string
+ *                  default: 089468365
+ *              Age:
+ *                  type: number
+ *                  default: 22
+ *              Gender:
+ *                  type: string
+ *                  default: Female
+ *              Birthday:
+ *                  type: string
+ *                  default: 1995-02-08
+ *              Ethnicity:
+ *                  type: string
+ *                  default: Black
+ *              EmploymentStatus:
+ *                  type: string
+ *                  default: Employed
+ *              Email:
+ *                  type: string
+ *                  default: janeDoe@example.com
+ *              LoyaltyTier:
+ *                  type: string
+ *                  default: Gold
+ *      GetLoyaltyCustomerResponse:
+ *          type: array
+ *          properties:
+ *              CustomerID:
+ *                  type: number
+ *              FirstName:
+ *                  type: string
+ *              LastName:
+ *                  type: string
+ *              MobileNumber:
+ *                  type: string
+ *              Age:
+ *                  type: string
+ *              Gender:
+ *                  type: string
+ *              Birthday:
+ *                  type: string
+ *              Ethnicity:
+ *                  type: string
+ *              EmploymentStatus:
+ *                  type: string
+ *              Email:
+ *                  type: string
+ *              LoayltyTier:
+ *                  type: string
+ */
+Products.getLoyaltyCustomers = (result) => {
+    dbConn.query('SELECT CustomerID, FirstName, LastName, MobileNumber, Age, Gender, Birthday, Ethnicity, EmploymentStatus, Email, LoyaltyTier FROM store_loyalty.tblloyaltycustomers', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all loyalty customers ' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
 }
 
 module.exports = Products;

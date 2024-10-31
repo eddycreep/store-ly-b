@@ -36,8 +36,8 @@ exports.setProductSpecial = (req, res) => {
   })
 }
 
-exports.getProductSpecials = (req, res) => {
-  ProductsModel.getProductSpecials((err, user) => {
+exports.getActiveProductSpecials = (req, res) => {
+  ProductsModel.getActiveProductSpecials((err, user) => {
     if (err) {
       user.message = "Get Active Product Specials - Failed";
       res.send(err);
@@ -60,8 +60,8 @@ exports.getUpcomingProductSpecials = (req, res) => {
   })
 }
 
-exports.getActiveGroupSpecials = (req, res) => {
-  ProductsModel.getActiveGroupSpecials((err, specials) => {
+exports.getActiveCombinedSpecials = (req, res) => {
+  ProductsModel.getActiveCombinedSpecials((err, specials) => {
     if (err) {
       specials.message = "Get Active Group Specials - Failed";
       res.send(err);
@@ -72,8 +72,8 @@ exports.getActiveGroupSpecials = (req, res) => {
   })
 }
 
-exports.getUpcomingGroupSpecials = (req, res) => {
-  ProductsModel.getUpcomingGroupSpecials((err, specials) => {
+exports.getUpcomingCombinedSpecials = (req, res) => {
+  ProductsModel.getUpcomingCombinedSpecials((err, specials) => {
     if (err) {
       specials.message = "Get Upcoming Group Specials - Failed";
       res.send(err);
@@ -130,5 +130,42 @@ exports.getActiveSurveys = (req, res) => {
       }
           user.message = "Fetching Active Surveys - Success";
           res.send(user);
+  })
+}
+
+exports.getStores = (req, res) => {
+  ProductsModel.getStores((err, user) => {
+    if (err) {
+      user.message = "Get Stores - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Stores - Success";
+    res.send(user);
+  })
+}
+
+exports.getCustomers = (req, res) => {
+  ProductsModel.getCustomers((err, user) => {
+    if (err) {
+      user.message = "Get Customers - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Customers - Success";
+    res.send(user);
+  })
+}
+
+
+exports.getLoyaltyCustomers = (req, res) => {
+  ProductsModel.getLoyaltyCustomers((err, user) => {
+    if (err) {
+      user.message = "Get Loyalty Customers - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Loyalty Customers - Success";
+    res.send(user);
   })
 }
