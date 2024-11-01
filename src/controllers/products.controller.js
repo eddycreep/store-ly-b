@@ -24,18 +24,6 @@ exports.setSpecial = (req, res) => {
   })
 }
 
-exports.getSpecialId = (req, res) => {
-  ProductsModel.getSpecialId(req, (err, special) => {
-    if (err) {
-      special.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    special.message = "Success";
-    res.send(special);
-  })
-}
-
 exports.setProductSpecial = (req, res) => {
   ProductsModel.setProductSpecial(req, (err, user) => {
     if (err) {
@@ -48,8 +36,8 @@ exports.setProductSpecial = (req, res) => {
   })
 }
 
-exports.getProductSpecials = (req, res) => {
-  ProductsModel.getProductSpecials((err, user) => {
+exports.getActiveProductSpecials = (req, res) => {
+  ProductsModel.getActiveProductSpecials((err, user) => {
     if (err) {
       user.message = "Get Active Product Specials - Failed";
       res.send(err);
@@ -72,8 +60,8 @@ exports.getUpcomingProductSpecials = (req, res) => {
   })
 }
 
-exports.getActiveGroupSpecials = (req, res) => {
-  ProductsModel.getActiveGroupSpecials((err, specials) => {
+exports.getActiveCombinedSpecials = (req, res) => {
+  ProductsModel.getActiveCombinedSpecials((err, specials) => {
     if (err) {
       specials.message = "Get Active Group Specials - Failed";
       res.send(err);
@@ -84,8 +72,8 @@ exports.getActiveGroupSpecials = (req, res) => {
   })
 }
 
-exports.getUpcomingGroupSpecials = (req, res) => {
-  ProductsModel.getUpcomingGroupSpecials((err, specials) => {
+exports.getUpcomingCombinedSpecials = (req, res) => {
+  ProductsModel.getUpcomingCombinedSpecials((err, specials) => {
     if (err) {
       specials.message = "Get Upcoming Group Specials - Failed";
       res.send(err);
@@ -96,46 +84,8 @@ exports.getUpcomingGroupSpecials = (req, res) => {
   })
 }
 
-
-exports.updateGroupSpecial = (req, res) => {
-  ProductsModel.updateGroupSpecial(req, (err, special) => {
-    if (err) {
-      special.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    special.message = "Success";
-    res.send(special);
-  })
-}
-
-
-exports.updateGroupSpecialProduct = (req, res) => {
-  ProductsModel.updateGroupSpecialProduct(req, (err, special) => {
-    if (err) {
-      special.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    special.message = "Success";
-    res.send(special);
-  })
-}
-
-exports.setProductGroupSpecial = (req, res) => {
-  ProductsModel.setProductGroupSpecial(req, (err, employee) => {
-    if (err) {
-      employee.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    employee.message = "Success";
-    res.send(employee);
-  })
-}
-
-exports.getAllGroupSpecials = (req, res) => {
-  ProductsModel.getAllGroupSpecials((err, user) => {
+exports.getAllProductSpecials = (req, res) => {
+  ProductsModel.getAllProductSpecials((err, user) => {
     if (err) {
       user.message = "Failed";
       res.send(err);
@@ -146,14 +96,76 @@ exports.getAllGroupSpecials = (req, res) => {
   })
 }
 
-exports.setReward = (req, res) => {
-  ProductsModel.setReward(req, (err, employee) => {
+
+exports.getAllCombinedSpecials = (req, res) => {
+  ProductsModel.getAllCombinedSpecials((err, user) => {
     if (err) {
-      employee.message = "Failed";
+      user.message = "Failed";
       res.send(err);
       process.exit(1);
     }
-    employee.message = "Success";
+    user.message = "Success";
+    res.send(user);
+  })
+}
+
+exports.getActiveRewards = (req, res) => {
+  ProductsModel.getActiveRewards((err, employee) => {
+    if (err) {
+      employee.message = "Fetching Active Rewards - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    employee.message = "Fetching Active Rewards - Success";
     res.send(employee);
+  })
+}
+
+exports.getActiveSurveys = (req, res) => {
+  ProductsModel.getActiveSurveys((err, user) => {
+      if (err) {
+          user.message = "Fetching Active Surveys - Failed";
+          res.send(err);
+          process.exit(1);
+      }
+          user.message = "Fetching Active Surveys - Success";
+          res.send(user);
+  })
+}
+
+exports.getStores = (req, res) => {
+  ProductsModel.getStores((err, user) => {
+    if (err) {
+      user.message = "Get Stores - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Stores - Success";
+    res.send(user);
+  })
+}
+
+exports.getCustomers = (req, res) => {
+  ProductsModel.getCustomers((err, user) => {
+    if (err) {
+      user.message = "Get Customers - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Customers - Success";
+    res.send(user);
+  })
+}
+
+
+exports.getLoyaltyCustomers = (req, res) => {
+  ProductsModel.getLoyaltyCustomers((err, user) => {
+    if (err) {
+      user.message = "Get Loyalty Customers - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Get Loyalty Customers - Success";
+    res.send(user);
   })
 }
