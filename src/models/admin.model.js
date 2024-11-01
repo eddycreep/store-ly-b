@@ -471,8 +471,8 @@ Admin.getAllRewards = (req, result) => {
  *           example: "Reward added successfully"
  */
 Admin.saveReward = (req, result) => {
-    const { reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive], (err, res) => {
+    const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive, loyaltyTier, ageGroup } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive, loyaltyTier, ageGroup)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive, loyaltyTier, ageGroup], (err, res) => {
         if (err) {
             console.log('Error while adding the Alternative Rewads:' + err);
             result(err, null);
