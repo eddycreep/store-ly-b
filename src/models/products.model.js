@@ -1,34 +1,34 @@
 var dbConn = require("../../config/db.config");
 
 var Products = function (user) {
-    this.idx = user.idx,
-    this.Stockcode = user.Stockcode,
-    this.Product_Description = user.Product_Description,
-    this.Category = user. Drinks,
-    this.DepNum = user.DepNum,
-    this.SubNum = user.SubNum,
-    this.Soh = user.Soh,
-    this.VarPrc = user.VarPrc,
-    this.VatPerc = user.VatPerc,
-    this.Discount = user.Discount,
-    this.ExclCost = user.ExclCost,
-    this.Markup = user.Markup,
-    this.GPPerc = user.GPPerc,
-    this.ExclSell = user.ExclSell,
-    this.ExclSell2 = user.ExclSell2,
-    this.ExclSell3 = user.ExclSell3,
-    this.Markup2 = user.Markup2,
-    this.GPPerc2 = user.GPPerc2,
-    this.Markup3 = user.Markup3,
-    this.GPPerc3 = user.GPPerc3,
-    this.IncSell = user.IncSell,
-    this.IncSell2 = user.IncSell2,
-    this.ROS = user.ROS,
-    this.Discount_Expiry = user.Discount_Expiry,
-    this.Client_ID = user.Client_ID,
-    this.Product_Image = user.Product_Image
+    this.idx = user.idx;
+    this.Stockcode = user.Stockcode;
+    this.Product_Description = user.Product_Description;
+    this.Category = user.Drinks;
+    this.DepNum = user.DepNum;
+    this.SubNum = user.SubNum;
+    this.Soh = user.Soh;
+    this.VarPrc = user.VarPrc;
+    this.VatPerc = user.VatPerc;
+    this.Discount = user.Discount;
+    this.ExclCost = user.ExclCost;
+    this.Markup = user.Markup;
+    this.GPPerc = user.GPPerc;
+    this.ExclSell = user.ExclSell;
+    this.ExclSell2 = user.ExclSell2;
+    this.ExclSell3 = user.ExclSell3;
+    this.Markup2 = user.Markup2;
+    this.GPPerc2 = user.GPPerc2;
+    this.Markup3 = user.Markup3;
+    this.GPPerc3 = user.GPPerc3;
+    this.IncSell = user.IncSell;
+    this.IncSell2 = user.IncSell2;
+    this.ROS = user.ROS;
+    this.Discount_Expiry = user.Discount_Expiry;
+    this.Client_ID = user.Client_ID;
+    this.Product_Image = user.Product_Image;
+};
 
-}; 
 
 
 /**
@@ -109,7 +109,6 @@ Products.setProductSpecial = (req, result) => {
         }
     });
 }
-
 
 /**
  * @openapi
