@@ -1,12 +1,12 @@
 var dbConn = require("../../config/db.config");
 
 var Admin = function (user) {
-    this.id = user.id,
-    this.client_name = user.client_name,
-    this.client_image = user.client_image,
-    this.product = user.product,
-    this.rating = user.rating,
-    this.date = user.date,
+    this.id = user.id;
+    this.client_name = user.client_name;
+    this.client_image = user.client_image;
+    this.product = user.product;
+    this.rating = user.rating;
+    this.date = user.date;
     this.comment = user.comment
 };
 
