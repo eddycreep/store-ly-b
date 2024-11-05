@@ -38,6 +38,9 @@ app.use('/admin', AdminRoutes);
 const ReportsRoutes = require('./src/routes/reports.route')
 app.use('/reports', ReportsRoutes);
 
+const BasketRoutes = require('./src/routes/basket.route')
+app.use('/basket', BasketRoutes);
+
 console.log('SERVERPORT:', process.env.SERVERPORT);  // Debugging line4
 
 // listen to the port
