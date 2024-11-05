@@ -9,7 +9,7 @@ require('dotenv').config({ path: './configuration.env' });
 
 /**
  * @openapi
- * /getcustomerbasket/{:basket_id}:
+ * /basket/getcustomerbasket/{basket_id}:
  *   get:
  *     summary: Get customer basket by ID
  *     tags:
@@ -43,7 +43,7 @@ router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket);
 
 /**
  * @openapi
- * /checkloyalty/{:customer_id}:
+ * /basket/checkloyalty/{:customer_id}:
  *   get:
  *     summary: Determine if customer is on loyalty
  *     tags:
@@ -77,7 +77,7 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 
 /**
  * @openapi
- * /checkloyalty/{:customer_id}:
+ * /basket//checkloyalty/{:customer_id}:
  *   get:
  *     summary: Determine if customer is on loyalty
  *     tags:
@@ -113,7 +113,7 @@ router.get('/getproductprices/:product_description', BasketController.getProduct
 
 /**
  * @openapi
- * /getproductspecial/{:product_description}:
+ * /basket/getproductspecial/{:product_description}:
  *   get:
  *     summary: Check individual product specials
  *     tags:
@@ -145,11 +145,9 @@ router.get('/getproductprices/:product_description', BasketController.getProduct
 router.get('/getproductspecial/:product_description', BasketController.getProductSpecials);
 
 
-
-
 /**
  * @openapi
- * /getproductcombinedspecial/:product_description:
+ * /basket/getproductcombinedspecial/:product_description:
  *   get:
  *     summary: Check combined product specials
  *     tags:
@@ -183,7 +181,7 @@ router.get('/getproductcombinedspecial/:product_description', BasketController.g
 
 /**
  * @openapi
- * /savebasketinfoitems:
+ * /basket/savebasketinfoitems:
  *   post:
  *     summary: Save basket information items
  *     tags:
@@ -285,7 +283,7 @@ router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems);
 
 /**
  * @openapi
- * /savefinaltransaction:
+ * /basket/savefinaltransaction:
  *   post:
  *     summary: Save final transaction details
  *     tags:
