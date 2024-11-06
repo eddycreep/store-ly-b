@@ -785,6 +785,154 @@ Admin.saveSurveyQuestions = (req, result) => {
  * @openapi
  * components:
  *   schemas:
+ *     UpdateRewardData:
+ *       type: object
+ *       required:
+ *         - reward_title
+ *         - reward
+ *         - reward_type
+ *         - reward_price
+ *         - store_id
+ *         - start_date
+ *         - expiry_date
+ *         - isActive
+ *       properties:
+ *         reward_title:
+ *           type: string
+ *           example: "Holiday Discount"
+ *         description:
+ *           type: string
+ *           example: "10% off during the holiday season"
+ *         reward:
+ *           type: string
+ *           example: "Discount"
+ *         reward_type:
+ *           type: string
+ *           example: "Seasonal"
+ *         reward_price:
+ *           type: number
+ *           example: 100
+ *         store_id:
+ *           type: string
+ *           example: "store123"
+ *         start_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-11-01"
+ *         expiry_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-12-31"
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *     UpdateRewardResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Reward updated successfully"
+ *         uid:
+ *           type: string
+ *           example: "reward123"
+ *     DeleteRewardResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Reward deleted successfully"
+ */
+Admin.updateSurvey = (req, result) => {
+    const { survey_title, survey_category, store_id, region, start_date, expiry_date, isActive } = req.body;
+    dbConn.query('UPDATE store_loyalty.tblsurvey SET survey_title = ?, survey_category = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, isActive = ? WHERE survey_id = ?', [survey_title, survey_category, store_id, region, start_date, expiry_date, isActive, req.params.survey_id], (err, res) => {
+        if (err) {
+            console.log('Error while updating the Alternative Rewads:' + err);
+            result(err, null);
+        } else {
+            console.log('Updating the ALternative Rewads was successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     UpdateRewardData:
+ *       type: object
+ *       required:
+ *         - reward_title
+ *         - reward
+ *         - reward_type
+ *         - reward_price
+ *         - store_id
+ *         - start_date
+ *         - expiry_date
+ *         - isActive
+ *       properties:
+ *         reward_title:
+ *           type: string
+ *           example: "Holiday Discount"
+ *         description:
+ *           type: string
+ *           example: "10% off during the holiday season"
+ *         reward:
+ *           type: string
+ *           example: "Discount"
+ *         reward_type:
+ *           type: string
+ *           example: "Seasonal"
+ *         reward_price:
+ *           type: number
+ *           example: 100
+ *         store_id:
+ *           type: string
+ *           example: "store123"
+ *         start_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-11-01"
+ *         expiry_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-12-31"
+ *         isActive:
+ *           type: boolean
+ *           example: true
+ *     UpdateRewardResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Reward updated successfully"
+ *         uid:
+ *           type: string
+ *           example: "reward123"
+ *     DeleteRewardResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Reward deleted successfully"
+ */
+Admin.updateSurveyQuestions = (req, result) => {
+    const { question_text, question_type } = req.body;
+    dbConn.query('UPDATE store_loyalty.tblsurvey_questions SET question_text = ?, question_type = ? WHERE survey_id = ?', [question_text, question_type, req.params.survey_id], (err, res) => {
+        if (err) {
+            console.log('Error while updating the Alternative Rewads:' + err);
+            result(err, null);
+        } else {
+            console.log('Updating the ALternative Rewads was successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
  *     DeleteSurveyResponse:
  *       type: object
  *       properties:

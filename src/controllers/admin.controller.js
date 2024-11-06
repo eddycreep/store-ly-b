@@ -235,6 +235,31 @@ exports.saveSurveyQuestions = (req, res) => {
     })
 }
 
+exports.updateSurvey = (req, res) => {
+    AdminModel.updateSurvey(req, (err, user) => {
+    if (err) {
+        user.message = "Update Survey - Failed";
+        res.send(err);
+        process.exit(1);
+    }
+        user.message = "Update Survey - Success";
+        res.send(user);
+    })
+}
+
+exports.updateSurveyQuestions = (req, res) => {
+    AdminModel.updateSurveyQuestions(req, (err, user) => {
+    if (err) {
+        user.message = "Update Survey Questions - Failed";
+        res.send(err);
+        process.exit(1);
+    }
+        user.message = "Update Survey Questions - Success";
+        res.send(user);
+    })
+}
+
+
 exports.deleteSurvey = (req, res) => {
     AdminModel.deleteSurvey(req, (err, user) => {
         if (err) {

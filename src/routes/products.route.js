@@ -25,6 +25,7 @@ router.get('/healthcheck', (req, res) => res.send("Hello, world!"));
  *   get:
  *     tags:
  *      - Products
+ *     summary: Get products list
  *     description: Gets a list of products
  *     responses:
  *       200:
@@ -46,6 +47,7 @@ router.get('/getproducts', ProductsController.getProducts);
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Active Product Specials
  *     description: Gets all active product specials
  *     responses:
  *       200:
@@ -67,6 +69,7 @@ router.get('/getactiveproductspecials', ProductsController.getActiveProductSpeci
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Upcoming Product Specials
  *     description: Gets all upcoming product specials
  *     responses:
  *       200:
@@ -89,6 +92,7 @@ router.get('/getupcomingproductspecials', ProductsController.getUpcomingProductS
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Active Combined Specials
  *     description: Gets active combined specials
  *     responses:
  *       200:
@@ -111,6 +115,7 @@ router.get('/getactivecombinedspecials', ProductsController.getActiveCombinedSpe
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Upcoming Combined Specials
  *     description: Gets upcoming combined specials
  *     responses:
  *       200:
@@ -134,6 +139,7 @@ router.get('/getupcomingcombinedspecials', ProductsController.getUpcomingCombine
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get all Product Specials
  *     description: Gets all product specials
  *     responses:
  *       200:
@@ -155,6 +161,7 @@ router.get('/getallproductspecials', ProductsController.getAllProductSpecials);
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Combined Specials
  *     description: Gets all combined specials
  *     responses:
  *       200:
@@ -178,6 +185,7 @@ router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials)
  *   get:
  *     tags:
  *       - Rewards
+ *     summary: Get Active Rewards
  *     description: Get all active rewards
  *     responses:
  *       200:
@@ -224,6 +232,7 @@ router.get('/getactivesurveys', ProductsController.getActiveSurveys)
  *   get:
  *     tags:
  *      - Stores
+ *     summary: Get All Stores
  *     description: Gets all stores with location
  *     responses:
  *       200:
@@ -246,6 +255,7 @@ router.get('/getstores', ProductsController.getStores);
  *   get:
  *     tags:
  *      - Customers
+ *     summary: Get Customers
  *     description: Gets store customers
  *     responses:
  *       200:
@@ -268,6 +278,7 @@ router.get('/getcustomers', ProductsController.getCustomers);
  *   get:
  *     tags:
  *      - Customers
+ *     summary: Get Loyalty Customers
  *     description: Gets all loyalty customers
  *     responses:
  *       200:

@@ -338,6 +338,7 @@ router.delete('/deletecombinedspecialitems/:special_id', AdminController.deleteC
  *   get:
  *     tags:
  *       - Rewards
+ *     summary: Get All Rewards
  *     description: Get all rewards (active and inactive)
  *     responses:
  *       200:
@@ -561,6 +562,84 @@ router.get('/getsurveyid/:survey_title', AdminController.getSurveyID);
  *         description: Internal Server Error
  */
 router.post('/savesurveyquestions', AdminController.saveSurveyQuestions);
+
+/**
+ * @openapi
+ * /admin/updatesurvey/{survey_id}:
+ *   patch:
+ *     tags:
+ *       - Survey
+ *     summary: Update an survey Survey
+ *     description: Updates Survey details based on the provided special_id
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier of the Survey
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateSurveyData'
+ *     responses:
+ *       200:
+ *         description: Survey updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *               $ref: '#/components/schemas/UpdateSurveyResponse'
+ *       400:
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Reward not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.patch('/updatesurvey/:survey_id', AdminController.updateSurvey);
+
+/**
+ * @openapi
+ * /admin/updatesurveyquestions/{survey_id}:
+ *   patch:
+ *     tags:
+ *       - Survey
+ *     summary: Update an survey Survey
+ *     description: Updates Survey details based on the provided special_id
+ *     parameters:
+ *       - in: path
+ *         name: uid
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier of the Survey
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateSurveyData'
+ *     responses:
+ *       200:
+ *         description: Survey updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *               $ref: '#/components/schemas/UpdateSurveyResponse'
+ *       400:
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Reward not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.patch('/updatesurveyquestions/:survey_id', AdminController.updateSurveyQuestions);
 
 /**
  * @openapi
