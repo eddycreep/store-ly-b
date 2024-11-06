@@ -43,7 +43,7 @@ router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket);
 
 /**
  * @openapi
- * /basket/checkloyalty/{:customer_id}:
+ * /basket/checkloyalty/{customer_id}:
  *   get:
  *     summary: Determine if customer is on loyalty
  *     tags:
@@ -77,7 +77,7 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 
 /**
  * @openapi
- * /basket//checkloyalty/{:customer_id}:
+ * /basket/checkloyalty/{customer_id}:
  *   get:
  *     summary: Determine if customer is on loyalty
  *     tags:
@@ -113,7 +113,7 @@ router.get('/getproductprices/:product_description', BasketController.getProduct
 
 /**
  * @openapi
- * /basket/getproductspecial/{:product_description}:
+ * /basket/getproductspecial/{product_description}:
  *   get:
  *     summary: Check individual product specials
  *     tags:
@@ -147,7 +147,7 @@ router.get('/getproductspecial/:product_description', BasketController.getProduc
 
 /**
  * @openapi
- * /basket/getproductcombinedspecial/:product_description:
+ * /basket/getproductcombinedspecial/{product_description}:
  *   get:
  *     summary: Check combined product specials
  *     tags:

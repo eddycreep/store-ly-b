@@ -21,131 +21,108 @@ router.get('/healthcheck', (req, res) => res.send("Hello, world!"));
 
 /**
  * @openapi
- * /getproducts:
+ * /products/getproducts:
  *   get:
  *     tags:
  *      - Products
  *     description: Gets a list of products
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetProductData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetProductResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.get('/getproducts', ProductsController.getProducts); 
 
 /**
  * @openapi
- * /getactiveproductspecials:
+ * /products/getactiveproductspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets all active product specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetActiveProductSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetActiveProductSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.get('/getactiveproductspecials', ProductsController.getActiveProductSpecials); //individual
 
 /**
  * @openapi
- * /getupcomingproductspecials:
+ * /products/getupcomingproductspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets all upcoming product specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetUpcomingProductSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetUpcomingProductSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getupcomingproductspecials', ProductsController.getUpcomingProductSpecials);
 
+
 /**
  * @openapi
- * /getactivecombinedspecials:
+ * /products/getactivecombinedspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets active combined specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetActiveCombiniedSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetActiveCombiniedSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getactivecombinedspecials', ProductsController.getActiveCombinedSpecials); 
 
+
 /**
  * @openapi
- * /getupcomingcombinedspecials:
+ * /products/getupcomingcombinedspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets upcoming combined specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetActiveCombiniedSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
- *                  $ref: '#/components/schemas/GetActiveCombiniedSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/GetUpcomingCombiniedSpecialsResponse'
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getupcomingcombinedspecials', ProductsController.getUpcomingCombinedSpecials); 
 
@@ -153,53 +130,43 @@ router.get('/getupcomingcombinedspecials', ProductsController.getUpcomingCombine
 
 /**
  * @openapi
- * /getallproductspecials:
+ * /products/getallproductspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets all product specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetProductSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetProductSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getallproductspecials', ProductsController.getAllProductSpecials);
 
 /**
  * @openapi
- * /getallcombinedspecials:
+ * /products/getallcombinedspecials:
  *   get:
  *     tags:
  *      - Specials
  *     description: Gets all combined specials
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetCombiniedSpecialsData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetCombiniedSpecialsResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials);
 
@@ -207,7 +174,7 @@ router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials)
 
 /**
  * @openapi
- * /getactiverewards:
+ * /products/getactiverewards:
  *   get:
  *     tags:
  *       - Rewards
@@ -227,85 +194,92 @@ router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials)
 router.get('/getactiverewards', ProductsController.getActiveRewards);
 
 //surveys
-router.get('/getactivesurveys', ProductsController.getActiveSurveys)
 
 /**
  * @openapi
- * /getstores:
+ * /products/getactivesurveys:
+ *   get:
+ *     summary: Retrieve active surveys
+ *     tags:
+ *       - Surveys
+ *     description: Fetches all active surveys from the database
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all active surveys
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/ActiveSurveyResponse'
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/getactivesurveys', ProductsController.getActiveSurveys)
+
+
+/**
+ * @openapi
+ * /products/getstores:
  *   get:
  *     tags:
  *      - Stores
  *     description: Gets all stores with location
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetStoreData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetStoreResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.get('/getstores', ProductsController.getStores);
 
 
 /**
  * @openapi
- * /getcustomers:
+ * /products/getcustomers:
  *   get:
  *     tags:
  *      - Customers
  *     description: Gets store customers
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetCustomerData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetCustomerResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.get('/getcustomers', ProductsController.getCustomers); 
 
 
 /**
  * @openapi
- * /getloyaltycustomers:
+ * /products/getloyaltycustomers:
  *   get:
  *     tags:
  *      - Customers
  *     description: Gets all loyalty customers
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetLoyaltyCustomerData'
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetLoyaltyCustomerResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.get('/getloyaltycustomers', ProductsController.getLoyaltyCustomers); 
 

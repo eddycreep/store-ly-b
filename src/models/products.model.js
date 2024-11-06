@@ -60,7 +60,7 @@ var Products = function (user) {
  *                  type: string
  *                  default: SWITCH 440ML
  *      GetProductResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              uid:
  *                  type: number
@@ -163,7 +163,7 @@ Products.setProductSpecial = (req, result) => {
  *                  type: number
  *                  default: 15.99
  *      GetActiveProductSpecialsResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              special_id:
  *                  type: number
@@ -253,7 +253,7 @@ Products.getActiveProductSpecials = (result) => {
  *                  type: number
  *                  default: 15.99
  *      GetUpcomingProductSpecialsResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              special_id:
  *                  type: number
@@ -279,7 +279,7 @@ Products.getActiveProductSpecials = (result) => {
  *                  type: number
  */
 Products.getUpcomingProductSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND sp.start_date >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all upcoming products specials' + err);
             result(null, err);
@@ -289,8 +289,86 @@ Products.getUpcomingProductSpecials = (result) => {
     })
 }
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetActiveCombiniedSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetActiveCombiniedSpecialsResponse:
+ *          type: object
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
 Products.getActiveCombinedSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') <= CURDATE() AND STR_TO_DATE(sp.expiry_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.product_description, scg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND sp.start_date <= CURDATE() AND sp.expiry_date >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all active product group specials' + err);
             result(null, err);
@@ -300,8 +378,86 @@ Products.getActiveCombinedSpecials = (result) => {
     })
 }
 
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetUpcomingCombiniedSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *              - product_description
+ *              - special_price
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *              product_description:
+ *                  type: string
+ *                  default: SWITCH 440ML
+ *              special_price:
+ *                  type: number
+ *                  default: 15.99
+ *      GetUpcomingCombiniedSpecialsResponse:
+ *          type: object
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ *              product_description:
+ *                  type: string
+ *              special_price:
+ *                  type: number
+ */
 Products.getUpcomingCombinedSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.special_group_id, scg.product_description, scg.special_price FROM store_loyalty.tblspecialssss sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND STR_TO_DATE(sp.start_date, '%a %b %d %Y %H:%i:%s') >= CURDATE()`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, scg.product_description, scg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup scg ON sp.special_id = scg.special_id WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND sp.start_date >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all upcoming product group specials' + err);
             result(null, err);
@@ -365,7 +521,7 @@ Products.getUpcomingCombinedSpecials = (result) => {
  *                  type: number
  *                  default: 15.99
  *      GetProductSpecialsResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              special_id:
  *                  type: number
@@ -458,7 +614,7 @@ Products.getAllProductSpecials = (result) => {
  *                  type: number
  *                  default: 15.99
  *      GetCombiniedSpecialsResponse: 
- *          type: array
+ *          type: object
  *          properties:
  *              special_id:
  *                  type: number
@@ -536,13 +692,20 @@ Products.getAllCombinedSpecials = (result) => {
  *           type: string
  *           format: date
  *           description: Expiry date of the reward availability
+ *         loyaltyTier:
+ *           type: string
+ *           format: date
+ *           description: The tier in which the reward is applied to
+ *         ageGroup:
+ *           type: string
+ *           format: date
+ *           description: The age group in which the reward is applied to
  *         isActive:
  *           type: boolean
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
-
-Products.getActiveRewards = (req, result) => {
-    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
+Products.getActiveRewards = (result) => {
+    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyaltyTier, ageGroup, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
         if (err) {
             console.log('Error while fetching the active Rewards:' + err);
             result(err, null);
@@ -553,7 +716,39 @@ Products.getActiveRewards = (req, result) => {
     });
 }
 
-Products.getActiveSurveys = (req, result) => {
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     ActiveSurveyResponse:
+ *       type: object
+ *       properties:
+ *         survey_id:
+ *           type: integer
+ *           description: Unique identifier for the survey
+ *         survey_title:
+ *           type: string
+ *           description: Survey Title
+ *         survey_category:
+ *           type: string
+ *           description: Survey Category
+ *         store_id:
+ *           type: string
+ *           description: Store in which the Survey is set
+ *         region:
+ *           type: string
+ *           description: Region for the Survey
+ *         start_date:
+ *           type: string
+ *           description: Survey Start Date
+ *         expiry_date:
+ *           type: string
+ *           description: Survey Expiry Date
+ *         isActive:
+ *           type: integer
+ *           description: Status of the Survey(1 for active, 0 for inactive)
+ */
+Products.getActiveSurveys = (result) => {
     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Active Surveys:' + err);
@@ -570,49 +765,8 @@ Products.getActiveSurveys = (req, result) => {
  * @openapi
  * components:
  *  schemas:
- *      GetStoreData:
- *          type: array
- *          required:
- *              - id
- *              - code 
- *              - description 
- *              - address_1, 
- *              - address_2,
- *              - address_3,
- *              - address_4,
- *              - address_5,
- *              - address_6,
- *              - address_7,
- *          properties:
- *              id:
- *                  type: number
- *                  default: 1
- *              code:
- *                  type: string
- *                  default: S001
- *              description:
- *                  type: string
- *                  default: PLUS DC Stellenbosch
- *              address_1:
- *                  type: string
- *                  default: 123 Vineyard Rd
- *              address_2:
- *                  type: string
- *                  default: Unit 12
- *              address_3:
- *                  type: string
- *                  default: Stellenbosch
- *              address_4:
- *                  type: string
- *                  default: Western Cape
- *              address_5:
- *                  type: number
- *                  default: 7600
- *              address_6:
- *                  type: string
- *                  default: South Africa
  *      GetStoreResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              id:
  *                  type: number
@@ -648,56 +802,8 @@ Products.getStores = (result) => {
  * @openapi
  * components:
  *  schemas:
- *      GetCustomerData:
- *          type: array
- *          required:
- *              - ID  
- *              - Code
- *              - Description
- *              - Address01
- *              - Address02
- *              - Address03
- *              - Address04
- *              - Address05
- *              - Address06
- *              - Address07
- *              - birth_day
- *          properties:
- *              ID:
- *                  type: number 
- *                  default: 1
- *              Code:   
- *                  type: string  
- *                  default: CUST006
- *              Description:
- *                  type: string
- *                  default: Olivia Garcia
- *              Address01:
- *                  type: string
- *                  default: 543 Aloe Ave
- *              Address02:
- *                  type: number
- *                  default: Unit 22
- *              Address03:
- *                  type: string
- *                  default: Port Elizabeth
- *              Address04:
- *                  type: string
- *                  default: Eastern Cape
- *              Address05:
- *                  type: string
- *                  default: 6001
- *              Address06:
- *                  type: string
- *                  default: South Africa
- *              Address07:
- *                  type: string
- *                  default: oliviagarcia@gmail.com
- *              birth_day:
- *                  type: string
- *                  default: 1995-09-12
  *      GetCustomerResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              ID:
  *                  type: number 
@@ -737,56 +843,8 @@ Products.getCustomers = (result) => {
  * @openapi
  * components:
  *  schemas:
- *      GetLoyaltyCustomerData:
- *          type: array
- *          required:
- *              - CustomerID
- *              - FirstName 
- *              - LastName 
- *              - MobileNumber, 
- *              - Age,
- *              - Gender,
- *              - Birthday,
- *              - Ethnicity,
- *              - EmploymentStatus,
- *              - Email,
- *              - LoyaltyTier,
- *          properties:
- *              CustomerID:
- *                  type: number
- *                  default: 1
- *              FirstName:
- *                  type: string
- *                  default: Jane
- *              LastName:
- *                  type: string
- *                  default: Doe
- *              MobileNumber:
- *                  type: string
- *                  default: 089468365
- *              Age:
- *                  type: number
- *                  default: 22
- *              Gender:
- *                  type: string
- *                  default: Female
- *              Birthday:
- *                  type: string
- *                  default: 1995-02-08
- *              Ethnicity:
- *                  type: string
- *                  default: Black
- *              EmploymentStatus:
- *                  type: string
- *                  default: Employed
- *              Email:
- *                  type: string
- *                  default: janeDoe@example.com
- *              LoyaltyTier:
- *                  type: string
- *                  default: Gold
  *      GetLoyaltyCustomerResponse:
- *          type: array
+ *          type: object
  *          properties:
  *              CustomerID:
  *                  type: number
