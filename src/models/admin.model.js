@@ -28,7 +28,7 @@ Admin.getReviews = (result) => {
  * components:
  *  schemas:
  *      SaveSpecialData:
- *          type: array
+ *          type: object
  *          required:
  *              - special_name
  *              - special
@@ -64,24 +64,11 @@ Admin.getReviews = (result) => {
  *                  type: number
  *                  default: 1
  *      SaveSpecialResponse:
- *          type: object
- *          properties:
- *              special_name:  
- *                  type: string
- *              special:
- *                  type: string
- *              special_type:
- *                  type: string
- *              store_id:
- *                  type: string
- *              start_date:
- *                  type: string
- *              expiry_date:
- *                  type: string
- *              special_value:
- *                  type: string
- *              isActive:
- *                  type: number
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Reward added successfully"
  */
 Admin.saveSpecial = (req, result) => {
     const { specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
@@ -101,7 +88,7 @@ Admin.saveSpecial = (req, result) => {
  * components:
  *  schemas:
  *      GetSpecialIDData:
- *          type: array
+ *          type: object
  *          required:
  *              - special_id
  *          properties:  
@@ -129,18 +116,14 @@ Admin.getSpecialID = (req, result) => {
  * @openapi
  * components:
  *  schemas:
- *      SaveCombinedSpecialData:
- *          type: array
+ *      SaveProductSpecialData:
+ *          type: object
  *          required:
  *              - special_id 
- *              - special_group_id
  *              - product_description
  *              - special_price
  *          properties:  
  *              special_id:  
- *                  type: number
- *                  default: 1
- *              special_group_id:  
  *                  type: number
  *                  default: 1
  *              product_description:
@@ -149,21 +132,15 @@ Admin.getSpecialID = (req, result) => {
  *              special_price:
  *                  type: string
  *                  default: 15.99
- *      SaveCombinedSpecialResponse:
- *          type: array
- *          properties:  
- *              special_id:  
- *                  type: number
- *              special_group_id:  
- *                  type: number
- *              product_description:
- *                  type: string
- *              special_price:
- *                  type: number
+ *      SaveProductSpecialResponse:
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Saving Product Special - Success"
  */
 Admin.saveProductSpecial = (req, result) => {
-    const { special_id, special_group_id, product_description, special_price } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblspecials_combinedgroup(special_id, special_group_id, product_description, special_price) VALUES(?, ?, ?, ?)', [special_id, special_group_id, product_description, special_price], (err, res) => {
+    const { special_id, product_description, special_price } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblspecialitems(special_id, product_description, special_price) VALUES(?, ?, ?)', [special_id, product_description, special_price], (err, res) => {
         if (err) {
             console.log('Error while adding the individual Products special:' + err);
             result(err, null);
@@ -183,10 +160,14 @@ Admin.saveProductSpecial = (req, result) => {
  *          type: object
  *          required:
  *              - special_id 
+ *              - special_group_id 
  *              - product_description
  *              - special_price
  *          properties:  
  *              special_id:  
+ *                  type: number
+ *                  default: 1
+ *              special_group_id:  
  *                  type: number
  *                  default: 2
  *              product_description:
@@ -196,14 +177,10 @@ Admin.saveProductSpecial = (req, result) => {
  *                  type: string
  *                  default: 15.99
  *      SaveCombinedSpecialResponse:
- *          type: object
- *          properties:  
- *              special_id:  
- *                  type: number
- *              product_description:
- *                  type: string
- *              special_price:
- *                  type: number
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Saving Combined Product Special - Success"
  */
 Admin.saveCombinedSpecial = (req, result) => {
     const { specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
@@ -223,20 +200,50 @@ Admin.saveCombinedSpecial = (req, result) => {
 /**
  * @openapi
  * components:
- *  schemas:
- *      UpdateSpecialData:
- *          type: array
- *          required:
- *              - special_id 
- *          properties:  
- *              special_id:  
- *                  type: number
- *                  default: 1
- *      UpdateSpecialResponse:
- *          type: array
- *          properties:  
- *              special_id:  
- *                  type: number
+ *   schemas:
+ *     UpdateSpecialData:
+ *       type: object
+ *       required:
+ *         - special_name
+ *         - special
+ *         - special_type
+ *         - store_id
+ *         - start_date
+ *         - expiry_date
+ *         - special_value
+ *         - isActive
+ *       properties:
+ *         special_name:
+ *           type: string
+ *           example: "Back To School"
+ *         special:
+ *           type: string
+ *           example: "10% off during the holiday season"
+ *         special_type:
+ *           type: string
+ *           example: "Discount"
+ *         store_id:
+ *           type: string
+ *           example: "Seasonal"
+ *         start_date:
+ *           type: string
+ *           example: 100
+ *         expiry_date:
+ *           type: string
+ *           example: "store123"
+ *         special_value:
+ *           type: string
+ *           format: date
+ *           example: "2024-11-01"
+ *         isActive:
+ *           type: integer
+ *           example: 1
+ *     UpdateSpecialResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Special updated successfully"
  */
 Admin.updateSpecial = (req, result) => {
     const { special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive } = req.body;
@@ -250,6 +257,30 @@ Admin.updateSpecial = (req, result) => {
     })
 }
 
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     UpdateSpecialItemData:
+ *       type: object
+ *       required:
+ *         - product_description
+ *         - special_price
+ *       properties:
+ *         product_description:
+ *           type: string
+ *           example: SWITCH 440ML
+ *         special_price:
+ *           type: number
+ *           example: 19.99
+ *     UpdateSpecialItemResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Update Special Item - Success"
+ */
 Admin.updateSpecialItem = (req, result) => {
     const { product_description, special_price } = req.body;
     dbConn.query(`UPDATE store_loyalty.tblspecialitems SET product_description = ?, special_price = ? WHERE special_id = ?`, [product_description, special_price, req.params.special_id], (err, res) => {
@@ -262,6 +293,34 @@ Admin.updateSpecialItem = (req, result) => {
     })
 }
 
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     UpdateCombinedSpecialItemsData:
+ *       type: object
+ *       required:
+ *         - special_group_id
+ *         - product_description
+ *         - special_price
+ *       properties:
+ *         special_group_id:
+ *           type: number
+ *           example: 1
+ *         product_description:
+ *           type: string
+ *           example: SWITCH 440ML
+ *         special_price:
+ *           type: number
+ *           example: 19.99
+ *     UpdateCombinedSpecialItemsResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Update Combined Special Item - Success"
+ */
 Admin.updateCombinedSpecialItems = (req, result) => {
     const { special_group_id, product_description, special_price } = req.body;
     dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET special_group_id = ?, product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [special_group_id, product_description, special_price, req.params.special_id, req.params.product_description], (err, res) => {
@@ -402,11 +461,10 @@ Admin.saveCombinedSpecial = (req, result) => {
  *           format: date
  *           description: Expiry date of the reward availability
  *         isActive:
- *           type: boolean
+ *           type: integer
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
-
-Admin.getAllRewards = (req, result) => {
+Admin.getAllRewards = (result) => {
     dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblrewards', (err, res) => {
         if (err) {
             console.log('Error while fetching the all Rewards:' + err);
@@ -461,8 +519,8 @@ Admin.getAllRewards = (req, result) => {
  *           format: date
  *           example: "2024-12-31"
  *         isActive:
- *           type: boolean
- *           example: true
+ *           type: integer
+ *           example: 1
  *     SaveRewardResponse:
  *       type: object
  *       properties:
@@ -584,52 +642,25 @@ Admin.deleteReward = (req, result) => {
  *           description: Title of the survey
  *         survey_category:
  *           type: string
- *           description: Category of the survey
+ *           description: Detailed description of the survey
  *         store_id:
- *           type: integer
- *           description: ID of the store offering the survey
+ *           type: string
+ *           description: Store  ID 
  *         region:
  *           type: string
- *           description: Region where the survey is available
+ *           description: Type/category of the survey
  *         start_date:
  *           type: string
- *           format: date
- *           description: Start date of the survey
+ *           format: float
+ *           description: Price or cost associated with the survey
  *         expiry_date:
  *           type: string
- *           format: date
- *           description: Expiry date of the survey
+ *           description: Identifier for the store offering the survey
  *         isActive:
- *           type: boolean
- *           description: Status of the survey (true for active, false for inactive)
- * 
- *     SaveSurveyRequest:
- *       type: object
- *       required:
- *         - surveyTitle
- *         - surveyCategory
- *         - storeID
- *         - creationDate
- *         - isActive
- *       properties:
- *         surveyTitle:
- *           type: string
- *           description: Title of the survey
- *         surveyCategory:
- *           type: string
- *           description: Category of the survey
- *         storeID:
  *           type: integer
- *           description: ID of the store creating the survey
- *         creationDate:
- *           type: string
- *           format: date
- *           description: Creation date of the survey
- *         isActive:
- *           type: boolean
- *           description: Status of the survey (true for active, false for inactive)
+ *           description: Status of the survey (1 for active, 0 for inactive)
  */
-Admin.getAllSurveys = (req, result) => {
+Admin.getAllSurveys = (result) => {
     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Surveys:' + err);
@@ -641,9 +672,54 @@ Admin.getAllSurveys = (req, result) => {
     });
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     SaveSurveyData:
+ *       type: object
+ *       required:
+ *         - survey_title
+ *         - survey_category
+ *         - store_id
+ *         - region
+ *         - start_date
+ *         - expiry_date
+ *         - isActive
+ *       properties:
+ *         survey_title:
+ *           type: string
+ *           example: "Customer Satisfaction Survey"
+ *         survey_category:
+ *           type: string
+ *           example: "Feedback on Shopping Experience"
+ *         store_id:
+ *           type: string
+ *           example: "store123"
+ *         region:
+ *           type: string
+ *           example: "North-East"
+ *         start_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-11-01"
+ *         expiry_date:
+ *           type: string
+ *           format: date
+ *           example: "2024-12-31"
+ *         isActive:
+ *           type: integer
+ *           example: 1
+ *     SaveSurveyResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Saving Survey - Success"
+ */
 Admin.saveSurvey = (req, result) => {
-    const { surveyTitle, surveyCategory, storeID, creationDate, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblsurvey(survey_title, survey_category, store_id, creation_date, isActive) VALUES(?, ?, ?, ?, ?)', [surveyTitle, surveyCategory, storeID, creationDate, isActive], (err, res) => {
+    const { survey_title, survey_category, store_id, region, start_date, expiry_date, isActive } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblsurvey(survey_title, survey_category, store_id, region, start_date, expiry_date, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [survey_title, survey_category, store_id, region, start_date, expiry_date, isActive], (err, res) => {
         if (err) {
             console.log('Error while saving the Survey:' + err);
             result(err, null);
@@ -665,9 +741,36 @@ Admin.getSurveyID = (req, result) => {
     })
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     SaveSurveyQuestionsData:
+ *       type: object
+ *       required:
+ *         - survey_id
+ *         - question_text
+ *         - question_type
+ *       properties:
+ *         survey_id:
+ *           type: integer
+ *           example: 1
+ *         question_text:
+ *           type: string
+ *           example: "'How satisfied are you with the cooldrink flavors available?'"
+ *         question_type:
+ *           type: string
+ *           example: "Rating"
+ *     SaveSurveyQuestionsResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Saving Survey Questions - Success"
+ */
 Admin.saveSurveyQuestions = (req, result) => {
-    const { surveyId, questionText, questionType, creationDate } = req.body;
-    dbConn.query('INSERT store_loyalty.tblsurvey_questions(survey_id, question_text, question_type, creation_date)VALUES(?, ?, ?, ?)', [surveyId, questionText, questionType, creationDate], (err, res) => {
+    const { survey_id, question_text, question_type } = req.body;
+    dbConn.query('INSERT store_loyalty.tblsurvey_questions(survey_id, question_text, question_type)VALUES(?, ?, ?)', [survey_id, question_text, question_type], (err, res) => {
         if (err) {
             console.log('Error while saving the Survey Questions:' + err);
             result(err, null);
@@ -678,6 +781,17 @@ Admin.saveSurveyQuestions = (req, result) => {
     });
 }
 
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     DeleteSurveyResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Survey deleted successfully"
+ */
 Admin.deleteSurvey = (req, result) => {
     dbConn.query('DELETE FROM store_loyalty.tblsurvey WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
         if (err) {

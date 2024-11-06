@@ -110,14 +110,14 @@ exports.getAllCombinedSpecials = (req, res) => {
 }
 
 exports.getActiveRewards = (req, res) => {
-  ProductsModel.getActiveRewards((err, employee) => {
+  ProductsModel.getActiveRewards((err, user) => {
     if (err) {
-      employee.message = "Fetching Active Rewards - Failed";
+      user.message = "Fetching Active Rewards - Failed";
       res.send(err);
       process.exit(1);
     }
-    employee.message = "Fetching Active Rewards - Success";
-    res.send(employee);
+    user.message = "Fetching Active Rewards - Success";
+    res.send(user);
   })
 }
 

@@ -11,70 +11,78 @@ router.get('/getproductreviews', AdminController.getReviews);
 
 /**
  * @openapi
- * /savespecial:
+ * /admin/savespecial:
  *   post:
  *     tags:
  *      - Specials
+ *     summary: Save Special
  *     description: Save Special
  *     requestBody:
- *      contents:
+ *      content:
  *          application/json:
  *            schema:
  *              $ref: '#/components/schemas/SaveSpecialData'
  *     responses:
  *       200:
- *         description: Success
+ *         description: Saving Special - Success
  *         content:
  *          application/json:
  *              schema:
  *                  $ref: '#/components/schemas/SaveSpecialResponse'
- *       409:
- *         description: Conflict
- *       400:
- *         description: Bad Request
+ *       500:
+ *         description: Internal server error
  */
 router.post('/savespecial', AdminController.saveSpecial); 
 
 
 /**
  * @openapi
- * /getspecialid/{:special_name}:
+ * /admin/getspecialid/{special_name}:
  *   get:
  *     tags:
  *      - Specials
+ *     summary: Get Special ID using Special Name
  *     description: Get Special ID
- *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/GetSpecialIDData'
+ *     parameters:
+ *       - in: path
+ *         name: special_name
+ *         required: true
+ *         schema: 
+ *           type: string
+ *         description: Name of the special
  *     responses:
  *       200:
  *         description: Success
  *         content:
  *          application/json:
  *              schema:
+ *               type: array
+ *               items:
  *                  $ref: '#/components/schemas/GetSpecialIDResponse'
- *       409:
- *         description: Conflict
  *       400:
- *         description: Bad Request
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Special not found
+ *       500:
+ *         description: Internal Server Error
  */
 router.get('/getspecialid/:special_name', AdminController.getSpecialID);
 
 
 /**
  * @openapi
- * /saveproductspecial:
+ * /admin/saveproductspecial:
  *   post:
  *     tags:
  *      - Specials
+ *     summary: Save the product item
  *     description: Save Product Special Item
  *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/SaveProductSpecialData'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SaveProductSpecialData'
  *     responses:
  *       200:
  *         description: Success
@@ -82,8 +90,8 @@ router.get('/getspecialid/:special_name', AdminController.getSpecialID);
  *          application/json:
  *              schema:
  *                  $ref: '#/components/schemas/SaveProductSpecialResponse'
- *       409:
- *         description: Conflict
+ *       500:
+ *         description: Internal Server Error
  *       400:
  *         description: Bad Request
  */
@@ -91,16 +99,18 @@ router.post('/saveproductspecial', AdminController.saveProductSpecial);
 
 /**
  * @openapi
- * /savecombinedspecial:
+ * /admin/savecombinedspecial:
  *   post:
  *     tags:
  *      - Specials
- *     description: Save Combined Special Items
+ *     summary: Save the Combined Product items
+ *     description: Save Combined Product Special Items
  *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/SaveCombinedSpecialData'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SaveCombinedSpecialData'
  *     responses:
  *       200:
  *         description: Success
@@ -108,8 +118,8 @@ router.post('/saveproductspecial', AdminController.saveProductSpecial);
  *          application/json:
  *              schema:
  *                  $ref: '#/components/schemas/SaveCombinedSpecialResponse'
- *       409:
- *         description: Conflict
+ *       500:
+ *         description: Internal Server Error
  *       400:
  *         description: Bad Request
  */
@@ -117,35 +127,125 @@ router.post('/savecombinedspecial', AdminController.saveCombinedSpecial);
 
 /**
  * @openapi
- * /updatespecial/{:special_id}:
- *   update:
+ * /admin/updatespecial/{special_id}:
+ *   patch:
  *     tags:
- *      - Specials
- *     description: Update Special
+ *       - Specials
+ *     summary: Update an existing special
+ *     description: Updates special details based on the provided special id
+ *     parameters:
+ *       - in: path
+ *         name: special_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier of the special
  *     requestBody:
- *      contents:
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/UpdateSpecialData'
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateSpecialData'
  *     responses:
  *       200:
- *         description: Success
+ *         description: Special updated successfully
  *         content:
- *          application/json:
- *              schema:
- *                  $ref: '#/components/schemas/UpdateSpecialResponse'
- *       409:
- *         description: Conflict
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *               $ref: '#/components/schemas/UpdateSpecialResponse'
  *       400:
- *         description: Bad Request
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Special not found
+ *       500:
+ *         description: Internal Server Error
  */
 router.patch('/updatespecial/:special_id', AdminController.updateSpecial); 
-router.patch('/updatespecialitem/:special_id', AdminController.updateSpecialItem); 
-router.patch('/updatecombinedspecialitems/:special_id/:product_description', AdminController.updateCombinedSpecialItems);
 
 /**
  * @openapi
- * /deletespecial/{special_id}:
+ * /admin/updatespecialitem/{special_id}:
+ *   patch:
+ *     tags:
+ *       - Specials
+ *     summary: Update Special Item
+ *     description: Updates special item and price based on special id
+ *     parameters:
+ *       - in: path
+ *         name: special_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier of the special
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateSpecialItemData'
+ *     responses:
+ *       200:
+ *         description: Special Item updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *               $ref: '#/components/schemas/UpdateSpecialItemResponse'
+ *       400:
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Special not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.patch('/updatespecialitem/:special_id', AdminController.updateSpecialItem); 
+
+
+/**
+ * @openapi
+ * /admin/updatecombinedspecialitems/{special_id}:
+ *   patch:
+ *     tags:
+ *       - Specials
+ *     summary: Update Combined Special Items
+ *     description: Updates Combined Special items and price based on special id
+ *     parameters:
+ *       - in: path
+ *         name: special_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Unique identifier of the special
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateCombinedSpecialItemsData'
+ *     responses:
+ *       200:
+ *         description: Combined Special Items updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               items:
+ *               $ref: '#/components/schemas/UpdateCombinedSpecialItemsResponse'
+ *       400:
+ *         description: Bad Request - Invalid data
+ *       404:
+ *         description: Not Found - Special not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.patch('/updatecombinedspecialitems/:special_id', AdminController.updateCombinedSpecialItems);
+
+/**
+ * @openapi
+ * /admin/deletespecial/{special_id}:
  *   delete:
  *     tags:
  *       - Specials
@@ -174,7 +274,7 @@ router.delete('/deletespecial/:special_id', AdminController.deleteSpecial);
 
 /**
  * @openapi
- * /deletespecialitem/{special_id}:
+ * /admin/deletespecialitem/{special_id}:
  *   delete:
  *     tags:
  *       - Specials
@@ -203,7 +303,7 @@ router.delete('/deletespecialitem/:special_id', AdminController.deleteSpecialIte
 
 /**
  * @openapi
- * /deletecombinedspecialitems/{special_id}:
+ * /admin/deletecombinedspecialitems/{special_id}:
  *   delete:
  *     tags:
  *       - Specials
@@ -234,7 +334,7 @@ router.delete('/deletecombinedspecialitems/:special_id', AdminController.deleteC
 
 /**
  * @openapi
- * /getallrewards:
+ * /admin/getallrewards:
  *   get:
  *     tags:
  *       - Rewards
@@ -255,7 +355,7 @@ router.get('/getallrewards', AdminController.getAllRewards);
 
 /**
  * @openapi
- * /savereward:
+ * /admin/savereward:
  *   post:
  *     tags:
  *       - Rewards
@@ -268,7 +368,7 @@ router.get('/getallrewards', AdminController.getAllRewards);
  *           schema:
  *             $ref: '#/components/schemas/SaveRewardData'
  *     responses:
- *       201:
+ *       200:
  *         description: Reward created successfully
  *         content:
  *           application/json:
@@ -283,7 +383,7 @@ router.post('/savereward', AdminController.saveReward);
 
 /**
  * @openapi
- * /updatereward/{uid}:
+ * /admin/updatereward/{uid}:
  *   patch:
  *     tags:
  *       - Rewards
@@ -308,6 +408,8 @@ router.post('/savereward', AdminController.saveReward);
  *         content:
  *           application/json:
  *             schema:
+ *               type: object
+ *               items:
  *               $ref: '#/components/schemas/UpdateRewardResponse'
  *       400:
  *         description: Bad Request - Invalid data
@@ -320,7 +422,7 @@ router.patch('/updatereward/:uid', AdminController.updateReward);
 
 /**
  * @openapi
- * /deletereward/{uid}:
+ * /admin/deletereward/{uid}:
  *   delete:
  *     tags:
  *       - Rewards
@@ -351,15 +453,15 @@ router.delete('/deletereward/:uid', AdminController.deleteReward);
 
 /**
  * @openapi
- * /getallsurveys:
+ * /admin/getallsurveys:
  *   get:
- *     summary: Retrieve all surveys
  *     tags:
  *       - Surveys
- *     description: Fetches all surveys from the database, including both active and inactive surveys.
+ *     summary: Retrieve all Surveys 
+ *     description: Get all Surveys (active and inactive)
  *     responses:
  *       200:
- *         description: Successfully retrieved all surveys
+ *         description: Successfully retrieved all Surveys
  *         content:
  *           application/json:
  *             schema:
@@ -373,31 +475,35 @@ router.get('/getallsurveys', AdminController.getAllSurveys)
 
 /**
  * @openapi
- * /savesurvey:
+ * /admin/savesurvey:
  *   post:
- *     summary: Save a new survey
  *     tags:
  *       - Surveys
+ *     summary: Create new survey
  *     description: Adds a new survey to the database.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/SaveSurveyRequest'
+ *             $ref: '#/components/schemas/SaveSurveyData'
  *     responses:
- *       201:
+ *       200:
  *         description: Survey created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SaveSurveyResponse'
  *       400:
- *         description: Bad request
+ *         description: Bad Request - Invalid data
  *       500:
- *         description: Internal server error
+ *         description: Internal Server Error
  */
 router.post('/savesurvey', AdminController.saveSurvey);
 
 /**
  * @openapi
- * /getsurveyid/{survey_title}:
+ * /admin/getsurveyid/{survey_title}:
  *   get:
  *     summary: Get survey ID by title
  *     tags:
@@ -427,11 +533,63 @@ router.post('/savesurvey', AdminController.saveSurvey);
  *         description: Internal server error
  */
 router.get('/getsurveyid/:survey_title', AdminController.getSurveyID);
-router.post('/savesurveyquestions', AdminController.saveSurveyQuestions);
-router.delete('/deletesurvey/:survey_id', AdminController.deleteSurvey);
 
-router.get('/getactivesurveys', AdminController.getActiveSurveys);
-router.get('/getallsurveys', AdminController.getAllSurveys);
+/**
+ * @openapi
+ * /admin/savesurveyquestions:
+ *   post:
+ *     tags:
+ *       - Surveys
+ *     summary: Save Survey Questions
+ *     description: Adds all the questions linked to the survey
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/SaveSurveyQuestionsData'
+ *     responses:
+ *       200:
+ *         description: Survey created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SaveSurveyQuestionsResponse'
+ *       400:
+ *         description: Bad Request - Invalid data
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/savesurveyquestions', AdminController.saveSurveyQuestions);
+
+/**
+ * @openapi
+ * /admin/deletesurvey/{survey_id}:
+ *   delete:
+ *     tags:
+ *       - Surveys
+ *     summary: Delete a survey by survey_id
+ *     description: Deletes a survey based on the provided survey_id.
+ *     parameters:
+ *       - in: path
+ *         name: survey_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Unique identifier of the survey
+ *     responses:
+ *       200:
+ *         description: Survey deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DeleteSurveyResponse'
+ *       404:
+ *         description: Not Found - Survey not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.delete('/deletesurvey/:survey_id', AdminController.deleteSurvey);
 
 
 module.exports = router;

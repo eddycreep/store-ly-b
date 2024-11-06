@@ -52,11 +52,11 @@ exports.saveProductSpecial = (req, res) => {
 exports.saveCombinedSpecial = (req, res) => {
     AdminModel.saveCombinedSpecial(req, (err, special) => {
     if (err) {
-        special.message = "Saving Combined Special - Failed";
+        special.message = "Saving Combined Special Products- Failed";
         res.send(err);
         process.exit(1);
     }
-        special.message = "Saving Combined Special - Success";
+        special.message = "Saving Combined Special Products- Success";
         res.send(special);
     })
 }
@@ -226,11 +226,11 @@ exports.getSurveyID = (req, res) => {
 exports.saveSurveyQuestions = (req, res) => {
     AdminModel.saveSurveyQuestions(req, (err, user) => {
         if (err) {
-            user.message = "Saving Survey- Failed";
+            user.message = "Saving Survey Questions- Failed";
             res.send(err);
             process.exit(1);
         }
-            user.message = "Saving Survey - Success";
+            user.message = "Saving Survey Questions- Success";
             res.send(user);
     })
 }
@@ -255,18 +255,6 @@ exports.getActiveSurveys = (req, res) => {
             process.exit(1);
         }
             user.message = "Fetching Active Surveys - Success";
-            res.send(user);
-    })
-}
-
-exports.getAllSurveys = (req, res) => {
-    AdminModel.getAllSurveys((err, user) => {
-        if (err) {
-            user.message = "Fetching All Surveys - Failed";
-            res.send(err);
-            process.exit(1);
-        }
-            user.message = "Fetching All Surveys - Success";
             res.send(user);
     })
 }
