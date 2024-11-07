@@ -568,7 +568,7 @@ router.post('/savesurveyquestions', AdminController.saveSurveyQuestions);
  * /admin/updatesurvey/{survey_id}:
  *   patch:
  *     tags:
- *       - Survey
+ *       - Surveys
  *     summary: Update an survey Survey
  *     description: Updates Survey details based on the provided special_id
  *     parameters:
@@ -607,7 +607,7 @@ router.patch('/updatesurvey/:survey_id', AdminController.updateSurvey);
  * /admin/updatesurveyquestions/{survey_id}:
  *   patch:
  *     tags:
- *       - Survey
+ *       - Surveys
  *     summary: Update an survey Survey
  *     description: Updates Survey details based on the provided special_id
  *     parameters:
@@ -669,6 +669,35 @@ router.patch('/updatesurveyquestions/:survey_id', AdminController.updateSurveyQu
  *         description: Internal Server Error
  */
 router.delete('/deletesurvey/:survey_id', AdminController.deleteSurvey);
+
+/**
+ * @openapi
+ * /admin/deletesurveyquestions/{survey_id}:
+ *   delete:
+ *     tags:
+ *       - Surveys
+ *     summary: Delete questions by survey_id
+ *     description: Deletes the survey questions linked to the survey based on the provided survey_id.
+ *     parameters:
+ *       - in: path
+ *         name: survey_id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Unique identifier of the survey
+ *     responses:
+ *       200:
+ *         description: Survey Questions deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/DeleteSurveyQuestionsResponse'
+ *       404:
+ *         description: Not Found - Survey not found
+ *       500:
+ *         description: Internal Server Error
+ */
+router.delete('/deletesurveyquestions/:survey_id', AdminController.deleteSurveyQuestions);
 
 
 module.exports = router;
