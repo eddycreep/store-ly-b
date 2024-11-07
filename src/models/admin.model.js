@@ -952,28 +952,51 @@ Admin.deleteSurvey = (req, result) => {
     });
 }
 
-Admin.getActiveSurveys = (req, result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     DeleteSurveyQuestionsResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           example: "Survey Questions deleted successfully"
+ */
+Admin.deleteSurveyQuestions = (req, result) => {
+    dbConn.query('DELETE FROM store_loyalty.tblsurvey_questions WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
         if (err) {
-            console.log('Error while Fetching all Active Surveys:' + err);
+            console.log('Error while deleting the Survey Questions:' + err);
             result(err, null);
         } else {
-            console.log('Fetching all Active Surveys was Successful:', res);
+            console.log('Deleting the Survey Questions was Successful:', res);
             result(null, res);
         }
     });
 }
 
-Admin.getAllSurveys = (req, result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
-        if (err) {
-            console.log('Error while Fetching all Surveys:' + err);
-            result(err, null);
-        } else {
-            console.log('Fetching all Surveys was Successful:', res);
-            result(null, res);
-        }
-    });
-}
+// Admin.getActiveSurveys = (req, result) => {
+//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+//         if (err) {
+//             console.log('Error while Fetching all Active Surveys:' + err);
+//             result(err, null);
+//         } else {
+//             console.log('Fetching all Active Surveys was Successful:', res);
+//             result(null, res);
+//         }
+//     });
+// }
+
+// Admin.getAllSurveys = (req, result) => {
+//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
+//         if (err) {
+//             console.log('Error while Fetching all Surveys:' + err);
+//             result(err, null);
+//         } else {
+//             console.log('Fetching all Surveys was Successful:', res);
+//             result(null, res);
+//         }
+//     });
+// }
 
 module.exports = Admin;

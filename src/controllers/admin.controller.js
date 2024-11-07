@@ -272,14 +272,26 @@ exports.deleteSurvey = (req, res) => {
     })
 }
 
-exports.getActiveSurveys = (req, res) => {
-    AdminModel.getActiveSurveys((err, user) => {
+exports.deleteSurveyQuestions = (req, res) => {
+    AdminModel.deleteSurveyQuestions(req, (err, user) => {
         if (err) {
-            user.message = "Fetching Active Surveys - Failed";
+            user.message = "Deleting Survey Questions- Failed";
             res.send(err);
             process.exit(1);
         }
-            user.message = "Fetching Active Surveys - Success";
+            user.message = "Deleting Survey Questions- Success";
             res.send(user);
     })
 }
+
+// exports.getActiveSurveys = (req, res) => {
+//     AdminModel.getActiveSurveys((err, user) => {
+//         if (err) {
+//             user.message = "Fetching Active Surveys - Failed";
+//             res.send(err);
+//             process.exit(1);
+//         }
+//             user.message = "Fetching Active Surveys - Success";
+//             res.send(user);
+//     })
+// }
