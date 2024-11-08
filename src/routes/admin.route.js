@@ -384,15 +384,15 @@ router.post('/savereward', AdminController.saveReward);
 
 /**
  * @openapi
- * /admin/updatereward/{uid}:
+ * /admin/updatereward/{reward_id}:
  *   patch:
  *     tags:
  *       - Rewards
  *     summary: Update an existing reward
- *     description: Updates reward details based on the provided UID.
+ *     description: Updates reward details based on the provided reward_id.
  *     parameters:
  *       - in: path
- *         name: uid
+ *         name: reward_id
  *         required: true
  *         schema:
  *           type: string
@@ -419,19 +419,19 @@ router.post('/savereward', AdminController.saveReward);
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/updatereward/:uid', AdminController.updateReward);
+router.patch('/updatereward/:reward_id', AdminController.updateReward);
 
 /**
  * @openapi
- * /admin/deletereward/{uid}:
+ * /admin/deletereward/{reward_id}:
  *   delete:
  *     tags:
  *       - Rewards
- *     summary: Delete a reward by ID
- *     description: Deletes a reward based on the provided UID.
+ *     summary: Delete a reward by reward_id
+ *     description: Deletes a reward based on the provided reward_id.
  *     parameters:
  *       - in: path
- *         name: uid
+ *         name: reward_id
  *         required: true
  *         schema:
  *           type: string
@@ -448,7 +448,7 @@ router.patch('/updatereward/:uid', AdminController.updateReward);
  *       500:
  *         description: Internal Server Error
  */
-router.delete('/deletereward/:uid', AdminController.deleteReward);
+router.delete('/deletereward/:reward_id', AdminController.deleteReward);
 
 //surveys
 

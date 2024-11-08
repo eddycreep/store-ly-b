@@ -427,7 +427,7 @@ Admin.saveCombinedSpecial = (req, result) => {
  *     RewardResponse:
  *       type: object
  *       properties:
- *         uid:
+ *         reward_id:
  *           type: integer
  *           description: Unique identifier for the reward
  *         reward_title:
@@ -460,12 +460,18 @@ Admin.saveCombinedSpecial = (req, result) => {
  *           type: string
  *           format: date
  *           description: Expiry date of the reward availability
+ *         loyalty_tier:
+ *           type: string
+ *           description: The tier in which the reward is available
+ *         age_group:
+ *           type: string
+ *           description: The age group in which the reward is available
  *         isActive:
  *           type: integer
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
 Admin.getAllRewards = (result) => {
-    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblrewards', (err, res) => {
+    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM store_loyalty.tblrewards', (err, res) => {
         if (err) {
             console.log('Error while fetching the all Rewards:' + err);
             result(err, null);
@@ -490,6 +496,8 @@ Admin.getAllRewards = (result) => {
  *         - store_id
  *         - start_date
  *         - expiry_date
+ *         - loyalty_tier
+ *         - age_group
  *         - isActive
  *       properties:
  *         reward_title:
@@ -518,6 +526,12 @@ Admin.getAllRewards = (result) => {
  *           type: string
  *           format: date
  *           example: "2024-12-31"
+ *         loyalty_tier:
+ *           type: string
+ *           example: "Gold"
+ *         age_group:
+ *           type: string
+ *           example: "18-24"
  *         isActive:
  *           type: integer
  *           example: 1
@@ -529,8 +543,8 @@ Admin.getAllRewards = (result) => {
  *           example: "Reward added successfully"
  */
 Admin.saveReward = (req, result) => {
-    const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive, loyaltyTier, ageGroup } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive, loyaltyTier, ageGroup)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, isActive, loyaltyTier, ageGroup], (err, res) => {
+    const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, loyalty_tier, age_group, isActive)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive], (err, res) => {
         if (err) {
             console.log('Error while adding the Alternative Rewads:' + err);
             result(err, null);
@@ -553,8 +567,11 @@ Admin.saveReward = (req, result) => {
  *         - reward_type
  *         - reward_price
  *         - store_id
+ *         - region
  *         - start_date
  *         - expiry_date
+ *         - loyalty_tier
+ *         - age_group
  *         - isActive
  *       properties:
  *         reward_title:
@@ -575,6 +592,9 @@ Admin.saveReward = (req, result) => {
  *         store_id:
  *           type: string
  *           example: "store123"
+ *         region:
+ *           type: string
+ *           example: "Gauteng"
  *         start_date:
  *           type: string
  *           format: date
@@ -583,6 +603,12 @@ Admin.saveReward = (req, result) => {
  *           type: string
  *           format: date
  *           example: "2024-12-31"
+ *         loyalty_tier:
+ *           type: string
+ *           example: "Gold"
+ *         age_group:
+ *           type: string
+ *           example: "Young Adults"
  *         isActive:
  *           type: boolean
  *           example: true
@@ -603,8 +629,8 @@ Admin.saveReward = (req, result) => {
  *           example: "Reward deleted successfully"
  */
 Admin.updateReward = (req, result) => {
-    const { reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive } = req.body;
-    dbConn.query('UPDATE store_loyalty.tblrewards SET reward_title = ?, description = ?, reward = ?, reward_type = ?, reward_price = ?, store_id = ?, start_date = ?, expiry_date = ?, isActive = ? WHERE uid = ?', [reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, isActive, req.params.uid], (err, res) => {
+    const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive } = req.body;
+    dbConn.query('UPDATE store_loyalty.tblrewards SET reward_title = ?, description = ?, reward = ?, reward_type = ?, reward_price = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, loyalty_tier = ?, age_group = ?, isActive = ? WHERE reward_id = ?', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive, req.params.reward_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Alternative Rewads:' + err);
             result(err, null);
@@ -616,7 +642,7 @@ Admin.updateReward = (req, result) => {
 }
 
 Admin.deleteReward = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblrewards WHERE uid = ?', [req.params.uid], (err, res) => {
+    dbConn.query('DELETE FROM store_loyalty.tblrewards WHERE reward_id = ?', [req.params.reward_id], (err, res) => {
         if (err) {
             console.log('Error while removing the Reward:' + err);
             result(err, null);

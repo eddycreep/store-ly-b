@@ -659,7 +659,7 @@ Products.getAllCombinedSpecials = (result) => {
  *     ActiveRewardResponse:
  *       type: object
  *       properties:
- *         uid:
+ *         reward_id:
  *           type: integer
  *           description: Unique identifier for the reward
  *         reward_title:
@@ -692,11 +692,11 @@ Products.getAllCombinedSpecials = (result) => {
  *           type: string
  *           format: date
  *           description: Expiry date of the reward availability
- *         loyaltyTier:
+ *         loyalty_tier:
  *           type: string
  *           format: date
  *           description: The tier in which the reward is applied to
- *         ageGroup:
+ *         age_group:
  *           type: string
  *           format: date
  *           description: The age group in which the reward is applied to
@@ -705,7 +705,7 @@ Products.getAllCombinedSpecials = (result) => {
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
 Products.getActiveRewards = (result) => {
-    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyaltyTier, ageGroup, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
+    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
         if (err) {
             console.log('Error while fetching the active Rewards:' + err);
             result(err, null);
