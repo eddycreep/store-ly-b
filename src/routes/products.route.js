@@ -177,8 +177,51 @@ router.get('/getallproductspecials', ProductsController.getAllProductSpecials);
  */
 router.get('/getallcombinedspecials', ProductsController.getAllCombinedSpecials);
 
-//REWARDS
+/**
+ * @openapi
+ * /products/getactivespecials:
+ *   get:
+ *     tags:
+ *      - Specials
+ *     summary: Get All Active Specials
+ *     description: Gets all active specials
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *          application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/GetActiveSpecialsResponse'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get('/getactivespecials', ProductsController.getAllActiveSpecials);
 
+/**
+ * @openapi
+ * /products/getupcomingspecials:
+ *   get:
+ *     tags:
+ *      - Specials
+ *     summary: Get All upcoming Specials
+ *     description: Gets all upcoming specials (both individual and combined)
+ *     responses:
+ *       200:
+ *         description: Success
+ *         content:
+ *          application/json:
+ *              schema:
+ *               type: array
+ *               items:
+ *                  $ref: '#/components/schemas/GetUpcomingSpecialsResponse'
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get('/getupcomingspecials', ProductsController.getUpcomingSpecials);
+
+//REWARDS
 /**
  * @openapi
  * /products/getactiverewards:

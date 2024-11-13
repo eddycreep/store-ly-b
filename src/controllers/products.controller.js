@@ -96,7 +96,6 @@ exports.getAllProductSpecials = (req, res) => {
   })
 }
 
-
 exports.getAllCombinedSpecials = (req, res) => {
   ProductsModel.getAllCombinedSpecials((err, user) => {
     if (err) {
@@ -108,6 +107,31 @@ exports.getAllCombinedSpecials = (req, res) => {
     res.send(user);
   })
 }
+
+exports.getAllActiveSpecials = (req, res) => {
+  ProductsModel.getAllActiveSpecials((err, user) => {
+    if (err) {
+      user.message = "Fetching All Active Specials - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Fetching All Active Specials - Success";
+    res.send(user);
+  })
+}
+
+exports.getUpcomingSpecials = (req, res) => {
+  ProductsModel.getUpcomingSpecials((err, user) => {
+    if (err) {
+      user.message = "Fetching All upcoming Specials - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Fetching All upcoming Specials - Success";
+    res.send(user);
+  })
+}
+
 
 exports.getActiveRewards = (req, res) => {
   ProductsModel.getActiveRewards((err, user) => {
