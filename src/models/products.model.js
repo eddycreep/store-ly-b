@@ -189,7 +189,7 @@ Products.setProductSpecial = (req, result) => {
  *                  type: number
  */
 Products.getActiveProductSpecials = (result) => {
-    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1`, (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND sp.start_date <= CURDATE() AND sp.expiry_date >= CURDATE()`, (err, res) => {
         if (err) {
             console.log('Error while getting all active products specials' + err);
             result(null, err);
@@ -652,6 +652,162 @@ Products.getAllCombinedSpecials = (result) => {
     })
 }
 
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetActiveSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *      GetActiveSpecialsResponse: 
+ *          type: object
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ */
+Products.getAllActiveSpecials = (result) => {
+    dbConn.query('SELECT special_id, special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive FROM store_loyalty.tblspecials WHERE isActive = 1 AND start_date <= CURDATE() AND expiry_date >= CURDATE()', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all Active Specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
+
+/**
+ * @openapi
+ * components:
+ *  schemas:
+ *      GetUpcomingSpecialsData:
+ *          type: array
+ *          required:
+ *              - special_id, 
+ *              - special_name
+ *              - special
+ *              - special_type
+ *              - store_id
+ *              - start_date
+ *              - expiry_date
+ *              - special_value
+ *              - isActive
+ *          properties:  
+ *              special_id:
+ *                  type: number
+ *                  default: 1
+ *              special_name:
+ *                  type: string
+ *                  default: Refreshing Specials
+ *              special:
+ *                  type: number
+ *                  default: 10% Off
+ *              special_type:
+ *                  type: number 
+ *                  default: Special
+ *              store_id:
+ *                  type: string
+ *                  default: S004
+ *              start_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              expiry_date:
+ *                  type: string
+ *                  default: 2024-11-05 00:00:00
+ *              special_value:
+ *                  type: string
+ *                  default: Amount
+ *              isActive:
+ *                  type: string
+ *                  default: 1
+ *      GetUpcomingSpecialsResponse: 
+ *          type: object
+ *          properties:
+ *              special_id:
+ *                  type: number
+ *              special_name:
+ *                  type: string
+ *              special:
+ *                  type: number
+ *              special_type:
+ *                  type: string
+ *              store_id:
+ *                  type: string
+ *              start_date:
+ *                  type: string
+ *              expiry_date:
+ *                  type: string
+ *              special_value:
+ *                  type: string
+ *              isActive:
+ *                  type: number
+ */
+Products.getUpcomingSpecials = (result) => {
+    dbConn.query('SELECT special_id, special, special_type, store_id, start_date, expiry_date, special_value, isActive FROM store_loyalty.tblspecials WHERE isActive = 1 AND start_date >= CURDATE()', (err, res) => {
+        if (!(err === null)) {
+            console.log('Error while getting all Active Specials' + err);
+            result(null, err);
+        } else {
+            result(null, res);
+        }
+    })
+}
+
 /**
  * @openapi
  * components:
@@ -659,7 +815,7 @@ Products.getAllCombinedSpecials = (result) => {
  *     ActiveRewardResponse:
  *       type: object
  *       properties:
- *         uid:
+ *         reward_id:
  *           type: integer
  *           description: Unique identifier for the reward
  *         reward_title:
@@ -692,11 +848,11 @@ Products.getAllCombinedSpecials = (result) => {
  *           type: string
  *           format: date
  *           description: Expiry date of the reward availability
- *         loyaltyTier:
+ *         loyalty_tier:
  *           type: string
  *           format: date
  *           description: The tier in which the reward is applied to
- *         ageGroup:
+ *         age_group:
  *           type: string
  *           format: date
  *           description: The age group in which the reward is applied to
@@ -705,7 +861,7 @@ Products.getAllCombinedSpecials = (result) => {
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
 Products.getActiveRewards = (result) => {
-    dbConn.query('SELECT uid, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyaltyTier, ageGroup, isActive FROM store_loyalty.tblrewards WHERE isActive = 1', (err, res) => {
+    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM store_loyalty.tblrewards WHERE isActive = 1 AND start_date <= CURDATE() AND expiry_date >= CURDATE()', (err, res) => {
         if (err) {
             console.log('Error while fetching the active Rewards:' + err);
             result(err, null);
@@ -749,7 +905,7 @@ Products.getActiveRewards = (result) => {
  *           description: Status of the Survey(1 for active, 0 for inactive)
  */
 Products.getActiveSurveys = (result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1 AND start_date <= CURDATE() AND expiry_date >= CURDATE()', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Active Surveys:' + err);
             result(err, null);
