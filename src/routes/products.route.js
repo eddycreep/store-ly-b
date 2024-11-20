@@ -337,4 +337,5 @@ router.get('/getcustomers', ProductsController.getCustomers);
  */
 router.get('/getloyaltycustomers', ProductsController.getLoyaltyCustomers); 
 
+
 module.exports = router;

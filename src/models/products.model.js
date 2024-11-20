@@ -798,7 +798,7 @@ Products.getAllActiveSpecials = (result) => {
  *                  type: number
  */
 Products.getUpcomingSpecials = (result) => {
-    dbConn.query('SELECT special_id, special, special_type, store_id, start_date, expiry_date, special_value, isActive FROM store_loyalty.tblspecials WHERE isActive = 1 AND start_date >= CURDATE()', (err, res) => {
+    dbConn.query('SELECT special_id, special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive FROM store_loyalty.tblspecials WHERE isActive = 1 AND start_date >= CURDATE()', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting all Active Specials' + err);
             result(null, err);
