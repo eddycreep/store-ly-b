@@ -876,6 +876,70 @@ Products.getActiveRewards = (result) => {
  * @openapi
  * components:
  *   schemas:
+ *     UpcomingRewardResponse:
+ *       type: object
+ *       properties:
+ *         reward_id:
+ *           type: integer
+ *           description: Unique identifier for the reward
+ *         reward_title:
+ *           type: string
+ *           description: Title of the reward
+ *         description:
+ *           type: string
+ *           description: Detailed description of the reward
+ *         reward:
+ *           type: string
+ *           description: Reward item or benefit
+ *         reward_type:
+ *           type: string
+ *           description: Type/category of the reward
+ *         reward_price:
+ *           type: number
+ *           format: float
+ *           description: Price or cost associated with the reward
+ *         store_id:
+ *           type: integer
+ *           description: Identifier for the store offering the reward
+ *         region:
+ *           type: string
+ *           description: Region where the reward is available
+ *         start_date:
+ *           type: string
+ *           format: date
+ *           description: Start date of the reward availability
+ *         expiry_date:
+ *           type: string
+ *           format: date
+ *           description: Expiry date of the reward availability
+ *         loyalty_tier:
+ *           type: string
+ *           format: date
+ *           description: The tier in which the reward is applied to
+ *         age_group:
+ *           type: string
+ *           format: date
+ *           description: The age group in which the reward is applied to
+ *         isActive:
+ *           type: boolean
+ *           description: Status of the reward (1 for active, 0 for inactive)
+ */
+Products.getUpcomingRewards = (result) => {
+    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM store_loyalty.tblrewards WHERE isActive = 1 AND start_date >= CURDATE()', (err, res) => {
+        if (err) {
+            console.log('Error while fetching the upcoming Rewards:' + err);
+            result(err, null);
+        } else {
+            console.log('Fetching the upcoming rewards was successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
  *     ActiveSurveyResponse:
  *       type: object
  *       properties:
@@ -905,7 +969,52 @@ Products.getActiveRewards = (result) => {
  *           description: Status of the Survey(1 for active, 0 for inactive)
  */
 Products.getActiveSurveys = (result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1 AND start_date <= CURDATE() AND expiry_date >= CURDATE()', (err, res) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, loyalty_tier, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1 AND start_date <= CURDATE() AND expiry_date >= CURDATE()', (err, res) => {
+        if (err) {
+            console.log('Error while Fetching all Active Surveys:' + err);
+            result(err, null);
+        } else {
+            console.log('Fetching all Active Surveys was Successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+
+/**
+ * @openapi
+ * components:
+ *   schemas:
+ *     UpcomingSurveyResponse:
+ *       type: object
+ *       properties:
+ *         survey_id:
+ *           type: integer
+ *           description: Unique identifier for the survey
+ *         survey_title:
+ *           type: string
+ *           description: Survey Title
+ *         survey_category:
+ *           type: string
+ *           description: Survey Category
+ *         store_id:
+ *           type: string
+ *           description: Store in which the Survey is set
+ *         region:
+ *           type: string
+ *           description: Region for the Survey
+ *         start_date:
+ *           type: string
+ *           description: Survey Start Date
+ *         expiry_date:
+ *           type: string
+ *           description: Survey Expiry Date
+ *         isActive:
+ *           type: integer
+ *           description: Status of the Survey(1 for active, 0 for inactive)
+ */
+Products.getUpcomingSurveys = (result) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, loyalty_tier, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1 AND start_date >= CURDATE()', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Active Surveys:' + err);
             result(err, null);

@@ -145,6 +145,18 @@ exports.getActiveRewards = (req, res) => {
   })
 }
 
+exports.getUpcomingRewards = (req, res) => {
+  ProductsModel.getUpcomingRewards((err, user) => {
+    if (err) {
+      user.message = "Fetching Upcoming Rewards - Failed";
+      res.send(err);
+      process.exit(1);
+    }
+    user.message = "Fetching Upcoming Rewards - Success";
+    res.send(user);
+  })
+}
+
 exports.getActiveSurveys = (req, res) => {
   ProductsModel.getActiveSurveys((err, user) => {
       if (err) {
@@ -153,6 +165,18 @@ exports.getActiveSurveys = (req, res) => {
           process.exit(1);
       }
           user.message = "Fetching Active Surveys - Success";
+          res.send(user);
+  })
+}
+
+exports.getUpcomingSurveys = (req, res) => {
+  ProductsModel.getUpcomingSurveys((err, user) => {
+      if (err) {
+          user.message = "Fetching Upcoming Surveys - Failed";
+          res.send(err);
+          process.exit(1);
+      }
+          user.message = "Fetching Upcoming Surveys - Success";
           res.send(user);
   })
 }
