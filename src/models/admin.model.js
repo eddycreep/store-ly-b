@@ -744,8 +744,8 @@ Admin.getAllSurveys = (result) => {
  *           example: "Saving Survey - Success"
  */
 Admin.saveSurvey = (req, result) => {
-    const { survey_title, survey_category, store_id, region, start_date, expiry_date, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblsurvey(survey_title, survey_category, store_id, region, start_date, expiry_date, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [survey_title, survey_category, store_id, region, start_date, expiry_date, isActive], (err, res) => {
+    const { survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive } = req.body;
+    dbConn.query('INSERT INTO store_loyalty.tblsurvey(survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive], (err, res) => {
         if (err) {
             console.log('Error while saving the Survey:' + err);
             result(err, null);
