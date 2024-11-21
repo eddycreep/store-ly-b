@@ -244,6 +244,28 @@ router.get('/getupcomingspecials', ProductsController.getUpcomingSpecials);
  */
 router.get('/getactiverewards', ProductsController.getActiveRewards);
 
+/**
+ * @openapi
+ * /products/get-upcoming-rewards:
+ *   get:
+ *     tags:
+ *       - Rewards
+ *     summary: Get Upcoming Rewards
+ *     description: Get all Upcoming rewards
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved upcoming rewards
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UpcomingRewardResponse'
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/get-upcoming-rewards', ProductsController.getUpcomingRewards);
+
 //surveys
 
 /**
@@ -267,6 +289,29 @@ router.get('/getactiverewards', ProductsController.getActiveRewards);
  *         description: Internal server error
  */
 router.get('/getactivesurveys', ProductsController.getActiveSurveys)
+
+
+/**
+ * @openapi
+ * /products/get-upcoming-surveys:
+ *   get:
+ *     summary: Retrieve upcoming surveys
+ *     tags:
+ *       - Surveys
+ *     description: Fetches all upcoming surveys from the database
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all upcoming surveys
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/UpcomingSurveyResponse'
+ *       500:
+ *         description: Internal server error
+ */
+router.get('/get-upcoming-surveys', ProductsController.getUpcomingSurveys)
 
 
 /**
