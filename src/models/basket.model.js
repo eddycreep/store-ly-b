@@ -52,6 +52,66 @@ var Basket = function (user) {
 
 //EVENT LISTENERS BELOW
 
+// /**
+//  * @openapi
+//  * components:
+//  *  schemas:
+//  *      SaveSpecialData:
+//  *          type: object
+//  *          required:
+//  *              - special_name
+//  *              - special
+//  *              - special_type
+//  *              - store_id
+//  *              - start_date
+//  *              - expiry_date
+//  *              - special_value
+//  *              - isActive
+//  *          properties:  
+//  *              special_name:  
+//  *                  type: string
+//  *                  default: Fruits Special
+//  *              special:
+//  *                  type: string
+//  *                  default: Buy-Any-Two-Get-10%-Off
+//  *              special_type:
+//  *                  type: string
+//  *                  default: Combined Special
+//  *              store_id:
+//  *                  type: string
+//  *                  default: S001
+//  *              start_date:
+//  *                  type: string
+//  *                  default: 2024-10-27 00:00:00
+//  *              expiry_date:
+//  *                  type: string
+//  *                  default: 2024-10-27 00:00:00
+//  *              special_value:
+//  *                  type: string
+//  *                  default: Percentage
+//  *              isActive:
+//  *                  type: number
+//  *                  default: 1
+//  *      SaveSpecialResponse:
+//  *       type: object
+//  *       properties:
+//  *         message:
+//  *           type: string
+//  *           example: "Reward added successfully"
+//  */
+// Admin.postCustomerBasket = (req, result) => {
+//     const { specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
+//     dbConn.query('INSERT INTO store_loyalty.tblspecials (special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
+//         if (err) {
+//             console.log('Error while saving the Special:' + err);
+//             result(err, null);
+//         } else {
+//             console.log('Saving the Special was Successful:', res);
+//             result(null, res);
+//         }
+//     });
+// }
+
 //listener for the 'get-customer-basket' event
 event.on('get-customer-basket', (basketId) => {
         console.log('Retrieved basket information', basketId);

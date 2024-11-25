@@ -1,5 +1,19 @@
 const BasketModel = require('../models/basket.model');
 
+
+// exports.postCustomerBasket = (req, res) => {
+//   AdminModel.postCustomerBasket(req, (err, special) => {
+//   if (err) {
+//       special.message = "Post Customer Basket - Failed";
+//       res.send(err);
+//       process.exit(1);
+//   }
+//       special.message = "Post Customer Basket - Success";
+//       res.send(special);
+//   })
+// }
+
+
 exports.getCustomerBasket = (req, res) => {
   // Pass the `req` object to access `req.params.basket_id` in the model
   BasketModel.getCustomerBasket(req, (err, basket) => {
