@@ -8,14 +8,10 @@ require('dotenv').config({ path: './configuration.env' });
 
 router.post('/insertauditlog', UserController.InsertAuditLog);
 
-
-router.post('/sign-up', UserController.addNewMember);
-
-
 router.post('/login', (req, res) => {
   console.log(req.body)
   dbConn.query(
-    `SELECT * FROM store_loyalty.user WHERE emp_name = ${dbConn.escape(req.body.emp_name)} and id_no = ${dbConn.escape(req.body.id_no)};`,
+    `SELECT * FROM store_loyalty.user WHERE username = ${dbConn.escape(req.body.username)} and password = ${dbConn.escape(req.body.password)};`,
     (err, result) => {
       // user does not exists
       if (err) {
@@ -48,5 +44,4 @@ router.post('/login', (req, res) => {
     }
   );
 });
-
 module.exports = router;
