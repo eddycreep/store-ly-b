@@ -9,6 +9,95 @@ require('dotenv').config({ path: './configuration.env' });
 
 /**
  * @openapi
+ * /basket/postcustomerbasket:
+ *   post:
+ *     summary: Send the basket information with items
+ *     tags:
+ *       - API
+ *     description: Sends the customers basket information with items.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties: 
+ *               basket_id:
+ *                 type: integer
+ *                 description: ID of the basket
+ *                 example: 101
+ *               customer_id:
+ *                 type: integer
+ *                 description: ID of the customer
+ *                 example: 202
+ *               product:
+ *                 type: string
+ *                 description: Name of the product
+ *                 example: "Apples"
+ *               quantity:
+ *                 type: integer
+ *                 description: Quantity of the products purchased
+ *                 example: 3
+ *               purchase_date:
+ *                 type: string
+ *                 description: The date in which the basket was purchased
+ *                 example: 1.99
+ *               total_amount:
+ *                 type: integer
+ *                 description: Total Amount of the basket
+ *                 example: 45.99
+ *               payment_method:
+ *                 type: string
+ *                 description: The Payment method of the basket
+ *                 example: Cash
+ *     responses:
+ *       200:
+ *         description: Basket information successfully saved
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Success"
+ *                 data: basket_id, customer_id, product, quantity, purchase_date, total_amount, payment_method
+ *                   type: object
+ *                   properties:
+ *                     basket_id:
+ *                       type: integer
+ *                     customer_id:
+ *                       type: integer
+ *                     product:
+ *                       type: string
+ *                     quantity:
+ *                       type: integer
+ *                     purchase_date:
+ *                       type: string
+ *                     total_amount:
+ *                       type: decimal
+ *                       format: float
+ *                     payment_method:
+ *                       type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Failed"
+ *                 error:
+ *                   type: string
+ *                   description: Error details
+ */
+// router.get('/postcustomerbasket', BasketController.postCustomerBasket); 
+
+
+/**
+ * @openapi
  * /basket/getcustomerbasket/{basket_id}:
  *   get:
  *     summary: Get customer basket by ID

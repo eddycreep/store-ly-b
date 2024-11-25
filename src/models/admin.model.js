@@ -323,7 +323,7 @@ Admin.updateSpecialItem = (req, result) => {
  */
 Admin.updateCombinedSpecialItems = (req, result) => {
     const { special_group_id, product_description, special_price } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET special_group_id = ?, product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [special_group_id, product_description, special_price, req.params.special_id, req.params.product_description], (err, res) => {
+    dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET special_group_id = ?, product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [special_group_id, product_description, special_price, req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Combined Special Items' + err);
             result(null, err);
@@ -687,7 +687,7 @@ Admin.deleteReward = (req, result) => {
  *           description: Status of the survey (1 for active, 0 for inactive)
  */
 Admin.getAllSurveys = (result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, loyalty_tier, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Surveys:' + err);
             result(err, null);
