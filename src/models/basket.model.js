@@ -7,7 +7,7 @@ const event = new EventEmitter();
 //variables to store customers basket 
 let basketid;
 let customerid;
-let basketProducts;
+let basketProducts = [];
 let basketQuantity;
 let totalamount;
 let purchasedate;
@@ -56,172 +56,74 @@ var Basket = function (user) {
 };
 
 //EVENT LISTENERS BELOW
-
-//listener for the 'get-customer-basket' event
-event.on('get-customer-basket', (basketId) => {
-        console.log('Retrieved basket information', basketId);
-        
-        // Call the getCustomerBasketItems method
-        Basket.getCustomerBasket(basketId, (err, total_basket_amount) => {
-            if (err) {
-                console.error('Error retrieving basket total_basket_amount:', err);
-            } else {
-                console.log('Customers total basket', total_basket_amount);
-                // Further processing of basket items...
-
-                if (total_basket_amount && total_basket_amount.length > 0) {
-                    basketid = total_basket_amount[0].basket_id;
-                    customerid = total_basket_amount[0].customer_id;
-                    totalamount = total_basket_amount[0].total_amount;
-                    purchasedate = total_basket_amount[0].purchase_date;
-    
-                    console.log(`basketID: "${basketId}", customerID: "${customerid}", total amount: "${totalamount}", purchase date: "${purchasedate}"`);
-    
-                    // Check loyalty for the customer without checking product
-                    event.emit('check-loyalty-customer', customerid);
-    
-                    // Process each product in the basket
-                    total_basket_amount.forEach((item) => {
-                        product = item.product;
-    
-                        // Get prices, specials, and group specials for each product
-                        event.emit('get-product-prices', product);
-                    });
-                } else {
-                    console.log('there was no basket information returned from result')
-                }
-            }
-        });
-});
-
-//listener for the 'check-loyalty-customer' event
-event.on('check-loyalty-customer', (customerId) => {
-    console.log('Retrieved the customer id', customerId);
-    
-    // Call the getCustomerBasketItems method
-    Basket.checkLoyaltyCustomer(customerId, (err, customer) => {
+// Event listener to trigger getProductPrices automatically
+event.on('get-product-prices', (products) => {
+    // Call the getProductPrices function directly, passing the products
+    console.log("Triggering getProductPrices event listener...");
+    Basket.getProductPrices(products, (err, prices) => {
         if (err) {
-            console.error('Error determining if the customer is on loyalty:', err);
+            console.error("Error fetching product prices:", err);
         } else {
-            console.log('Customer is on loyalty program:', customer);
-            // Further processing of basket items...
-
-            if (customer && customer.length > 0) {
-                loyaltytier = customer[0].loyalty_tier;
-                console.log(`The customer is on the loyalty tier as a ${loyaltytier}, now checking product prices...`);
-
-                //emit event for basket items using stored variables
-                event.emit('get-product-prices', product)
-            } else {
-                console.log('Unfortunately the customer is not on the loyalty  program, No Discounts can be Applied!')
-            }
+            console.log("Product prices fetched successfully:", prices);
         }
     });
 });
 
-event.on('get-product-prices', (product) => {
-    console.log('ALL PRODUCTS', product);
-    
-    // Call the getCustomerBasketItems method
-    Basket.getProductPrices(product, (err, products) => {
+// Event listener for saveCustomerBasketItems
+event.on('save-customer-basket-items', () => {
+    console.log("Triggering saveCustomerBasketItems event listener...");
+    Basket.saveCustomerBasketItems((err, res) => {
         if (err) {
-            console.error('Error retrieving the product prices from inventory', err);
+            console.error("Error saving customer basket items:", err);
         } else {
-            console.log('Products Prices have been returned', products);
-            // Further processing of basket items...
-
-            if (products && products.length > 0) {
-                //assign values from the productsult
-                invProductPrice = products[0].selling_incl_1;
-
-                console.log(`Product "${product}" Inventory Stock Price: ${invProductPrice}`)
-
-                //emit event for basket items using stored variables
-                //event.emit('get-customer-basket-items', basketid)
-                //event.emit('check-loyalty-customer', customerid)
-                event.emit('get-product-specials', product) //product retrieved from get total basket
-            } else {
-                console.log('there was no product prices returned for the product')
-            }
+            console.log("Customer basket items saved successfully:", res);
+            event.emit('check-loyalty-customer'); // Trigger the next step
         }
     });
 });
 
-//listener for the 'get-product-specials' event
+// Event listener for triggering checkLoyaltyCustomer
+event.on('check-loyalty-customer', () => {
+    console.log("Triggering checkLoyaltyCustomer event listener...");
+    Basket.checkLoyaltyCustomer(customerid, (err, res) => {
+        if (err) {
+            console.error("Error checking loyalty customer:", err);
+        } else {
+            console.log("Loyalty customer checked successfully:", res);
+        }
+    });
+});
+
+// Event listener to trigger getProductSpecials
 event.on('get-product-specials', (product) => {
-        console.log(`Retrieving the product specials for "${product}"`);
-        
-        // Call the getCustomerBasketItems method
-        Basket.getProductSpecials(product, (err, productspecials) => {
-            if (err) {
-                console.error('Error retrieving the Individual Product Specials', err);
-            } else {
-                console.log('Retrieved the Individual Products Specials:', productspecials);
-                // Further processing of basket items...
-
-                if( productspecials && productspecials.length > 0) {
-                    specialid = productspecials[0].special_id;
-                    //special = productspecials[0].special;
-                    specialprice = productspecials[0].special_price;
-                    //specialvalue = productspecials[0].special_value;
-                    //specialtype = productspecials[0].special_type;
-                    //startdate = productspecials[0].start_date;
-                    //expirydate = productspecials[0].expiry_date;
-                    
-                    console.log(`The Individual Product has a special of - Special ID: "${specialid}", Special Price "${specialprice}"`);
-                } else {
-                    console.log('No product specials found for this item. Checking group specials...');
-
-                    //Emit event for checking group specials if no product specials are found
-                    event.emit('get-product-group-specials', product);
-                }
-            }
-        });
-});
-
-event.on('get-product-group-specials', (product) => {
-    console.log('Checking group specials for product:', product);
-
-    //Call the getProductGroupSpecials method
-    Basket.getProductGroupSpecials(product, (err, groupSpecials) => {
+    console.log("Triggering getProductSpecials event listener...");
+    Basket.getProductSpecials(product, (err, specials) => {
         if (err) {
-            console.error('Error retrieving group specials:', err);
+            console.error("Error fetching product specials:", err);
         } else {
-            console.log('Group specials:', groupSpecials);
+            console.log("Product specials fetched successfully:", specials);
 
-            if (groupSpecials && groupSpecials.length > 0) {
-                specialid = groupSpecials[0].special_id;
-                groupspecialid = groupSpecials[0].special_group_id;
-                //special = groupSpecial[0].special;
-                specialprice = groupSpecials[0].special_price;
-                specialvalue = groupSpecials[0].special_value;
-                specialtype = groupSpecials[0].special_type;
-                //startdate = groupSpecial[0].start_date;
-                //expirydate = groupSpecial[0].expiry_date;
-
-                console.log(`The Product is linked to a group special off - Special ID: ${specialid}, Group Special ID: ${groupspecialid}, Product: ${product}, Special Price: ${specialprice}`);
+            // Check if any specials were returned
+            if (specials && specials.length > 0) {
+                console.log("Individual Product Special found, proceeding with combined specials check...");
             } else {
-                console.log('NO INDIVIDUAL or GROUP SPECIALS HAVE BEEN FOUND FOR THE PRODUCT')
+                console.log("No Individual Specials found for the product, still proceeding with combined specials check...");
             }
         }
-    })
-})
-
-//listener for the 'save-clients-transaction' event
-event.on('save-clients-transaction', (basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate) => {
-        console.log('successfully save-clients-transaction', basketid);
-        
-        // Call the getCustomerBasketItems method
-        Basket.saveClientsTransaction(basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate, (err, client_info) => {
-            if (err) {
-                console.error('Error saving the information', err);
-            } else {
-                console.log('saved client information:', client_info);
-                // Further processing of basket items...
-            }
-        });
+    });
 });
 
+// Event listener to trigger getProductCombinedSpecials
+event.on('get-product-combined-specials', (product) => {
+    console.log("Triggering getProductCombinedSpecials event listener...");
+    Basket.getProductCombinedSpecials(product, (err, combinedSpecials) => {
+        if (err) {
+            console.error("Error fetching combined specials:", err);
+        } else {
+            console.log("Combined specials fetched successfully:", combinedSpecials);
+        }
+    });
+});
 
 //QUERIES THAT GET TRIGGERED BY THE EVENTS
 Basket.saveCustomerBasket = (req, result) => {
@@ -254,6 +156,8 @@ Basket.saveCustomerBasket = (req, result) => {
         } else {
             console.log('Saving the customers basket was Successful:', res);
             result(null, res);
+
+            event.emit('get-product-prices', product);
         }
     });
 }
@@ -287,10 +191,11 @@ Basket.getProductPrices = (product, result) => {
         .then((results) => {
             console.log('Product prices retrieved successfully:', results)
 
-            // Save results to the global variable
-            customerBasketPrices = results;
-                        
+            customerBasketPrices = results; // Save results to the global variable
             result(null, results); //send all results to the controller
+
+            // Emit event to trigger saveCustomerBasketItems
+            event.emit('save-customer-basket-items');
         })
         .catch((err) => {
             console.error('Error fetching product prices:', err);
@@ -329,9 +234,10 @@ Basket.saveCustomerBasketItems = (req, result) => {
             dbConn.query(query, [basketID, customerID, product, quantity, price, insertionTime], (err, res) => {
                 if (err) {
                     console.error(`Error saving item: ${product}`, err); // log any error that occurs
-                    rejecct(err);
+                    reject(err);
                 } else {
                     console.log(`Item saved successsfully: ${product}`); // log success
+                    event.emit('check-loyalty-customer');
                 }
             });
         });
@@ -373,28 +279,12 @@ Basket.checkLoyaltyCustomer = (customerId, result) => {
             } else {
                 //console.log('The Customer is apart of the loyalty program', res);
                 result(null, res);
+
+                // Trigger getProductCombinedSpecials regardless of specials result
+                event.emit('get-product-specials', basketProducts);
             }
         });
 }
-
-// Basket.getCustomerBasket = (basketId, result) => {
-//         // const basketId = req.params.basket_id;
-//         console.log('Fetching basket with ID:', basketId); // Add logging to see the basket_id
-
-//         dbConn.query('SELECT basket_id, customer_id, product, total_amount, purchase_date FROM store_loyalty.tblbasketinfo WHERE basket_id = ?', [basketId], (err, res) => {
-//             if (err) {
-//                 //console.error('Error while getting basket information:', err); // Better error logging
-//                 result(err, null);  // Notice the order: return error first
-//             } else if (res.length === 0) {
-//                 //Console.warn('No data found for basket ID:', basketId); // Log when no data is returned
-//                 result(null, { message: 'No basket found with this ID' }); // Return a meaningful message if no data
-//             } else {
-//                 //console.log('Successfully retrieved basket information:', res);
-
-//                 result(null, res);
-//             }
-//         });
-// };
 
 //basketProducts
 Basket.getProductSpecials = (product, result) => {
@@ -405,6 +295,9 @@ Basket.getProductSpecials = (product, result) => {
             } else {
                 //console.log('Successfully retrieved the special using the basket infomation', res);
                 result(null, res);
+
+                // Trigger getProductCombinedSpecials regardless of specials result
+                event.emit('get-product-combined-specials', product);
             }
         });
 }
