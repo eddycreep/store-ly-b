@@ -1,22 +1,27 @@
 var dbConn = require("../../config/db.config");
 const EventEmitter = require('events');
+//const { format } = require("date-fns");
 
 const event = new EventEmitter();
 
-//variables to store basket total transaction items
+//variables to store customers basket 
 let basketid;
 let customerid;
+let basketProducts;
+let basketQuantity;
 let totalamount;
 let purchasedate;
+let paymentMethod;
+
+// Declare a global variable to store product prices
+let customerBasketPrices = [];
 
 //variables to store all times linked too the customer basket
-let product;
-let quantity;
 let product_price;
 let discountapplied = 0
 
 //store customer loyalty
-let loyaltytier;
+let customersLoyaltyTier;
 
 //basket_id, customer_id, product, quantity, product_price, discount_applied, final_price, insertion_time
 
@@ -51,66 +56,6 @@ var Basket = function (user) {
 };
 
 //EVENT LISTENERS BELOW
-
-// /**
-//  * @openapi
-//  * components:
-//  *  schemas:
-//  *      SaveSpecialData:
-//  *          type: object
-//  *          required:
-//  *              - special_name
-//  *              - special
-//  *              - special_type
-//  *              - store_id
-//  *              - start_date
-//  *              - expiry_date
-//  *              - special_value
-//  *              - isActive
-//  *          properties:  
-//  *              special_name:  
-//  *                  type: string
-//  *                  default: Fruits Special
-//  *              special:
-//  *                  type: string
-//  *                  default: Buy-Any-Two-Get-10%-Off
-//  *              special_type:
-//  *                  type: string
-//  *                  default: Combined Special
-//  *              store_id:
-//  *                  type: string
-//  *                  default: S001
-//  *              start_date:
-//  *                  type: string
-//  *                  default: 2024-10-27 00:00:00
-//  *              expiry_date:
-//  *                  type: string
-//  *                  default: 2024-10-27 00:00:00
-//  *              special_value:
-//  *                  type: string
-//  *                  default: Percentage
-//  *              isActive:
-//  *                  type: number
-//  *                  default: 1
-//  *      SaveSpecialResponse:
-//  *       type: object
-//  *       properties:
-//  *         message:
-//  *           type: string
-//  *           example: "Reward added successfully"
-//  */
-// Admin.postCustomerBasket = (req, result) => {
-//     const { specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
-//     dbConn.query('INSERT INTO store_loyalty.tblspecials (special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
-//         if (err) {
-//             console.log('Error while saving the Special:' + err);
-//             result(err, null);
-//         } else {
-//             console.log('Saving the Special was Successful:', res);
-//             result(null, res);
-//         }
-//     });
-// }
 
 //listener for the 'get-customer-basket' event
 event.on('get-customer-basket', (basketId) => {
@@ -279,29 +224,146 @@ event.on('save-clients-transaction', (basketid, customerid, product, quantity, s
 
 
 //QUERIES THAT GET TRIGGERED BY THE EVENTS
-Basket.getCustomerBasket = (basketId, result) => {
-        // const basketId = req.params.basket_id;
-        console.log('Fetching basket with ID:', basketId); // Add logging to see the basket_id
+Basket.saveCustomerBasket = (req, result) => {
+    const { basket_id, customer_id, product, quantity, purchase_date, total_amount, payment_method } = req.body;
 
-        dbConn.query('SELECT basket_id, customer_id, product, total_amount, purchase_date FROM store_loyalty.tblbasketinfo WHERE basket_id = ?', [basketId], (err, res) => {
-            if (err) {
-                //console.error('Error while getting basket information:', err); // Better error logging
-                result(err, null);  // Notice the order: return error first
-            } else if (res.length === 0) {
-                //Console.warn('No data found for basket ID:', basketId); // Log when no data is returned
-                result(null, { message: 'No basket found with this ID' }); // Return a meaningful message if no data
-            } else {
-                //console.log('Successfully retrieved basket information:', res);
+    //assign values to global variables
+    basketid = basket_id;
+    customerid = customer_id;
+    basketProducts = product;
+    basketQuantity = quantity;
+    totalamount = total_amount;
+    purchasedate = purchase_date;
+    paymentMethod = payment_method;
 
-                result(null, res);
-            }
-        });
+    // Log the assigned values for debugging
+    console.log('Global Variables Assigned:', {
+        basketid,
+        customerid,
+        basketProducts,
+        quantity,
+        totalamount,
+        purchasedate,
+        paymentMethod,
+    });
+
+    dbConn.query('INSERT INTO store_loyalty.tblbasketinfo(basket_id, customer_id, purchase_date, total_amount, payment_method)VALUES(?, ?, ?, ?, ?)', [basket_id, customer_id, purchase_date, total_amount, payment_method], (err, res) => {
+        if (err) {
+            console.log('Error while saving the customers basket:' + err);
+            result(err, null);
+        } else {
+            console.log('Saving the customers basket was Successful:', res);
+            result(null, res);
+        }
+    });
+}
+
+Basket.getProductPrices = (product, result) => {
+    console.log('Products in Basket', basketProducts); 
+
+    if (!Array.isArray(basketProducts) || basketProducts.length === 0) {
+        return result({ message: 'No products provided in the basket'}, null)
+    }
+
+    const query = 'SELECT mstn.id, mstn.selling_incl_1, mstn.special_price_incl, COALESCE(inv.description_1, inv.description_2) AS description FROM store_loyalty.tblmultistoretrn mstn JOIN store_loyalty.tblinventory inv ON mstn.item_code = inv.item_code WHERE COALESCE(inv.description_1, inv.description_2) = ?'
+
+    const queries = basketProducts.map((product) => {
+        return new Promise((resolve, reject) => {
+            dbConn.query(query, [product], (err, res) => {
+                if (err) {
+                    console.error(`Error fetching price for product: ${product}`, err);
+                    reject(err);
+                } else if (res.length === 0) {
+                    console.log(`No price found for product: ${product}`);
+                    resolve({ product, message: "Price not found" });
+                } else {
+                    resolve({ product, prices: res})
+                }
+            })
+        })
+    })
+
+    Promise.all(queries)
+        .then((results) => {
+            console.log('Product prices retrieved successfully:', results)
+
+            // Save results to the global variable
+            customerBasketPrices = results;
+                        
+            result(null, results); //send all results to the controller
+        })
+        .catch((err) => {
+            console.error('Error fetching product prices:', err);
+            result(err, null);
+        })
 };
 
-Basket.checkLoyaltyCustomer = (customerId, result) => {
-    console.log("Checking loyalty for customer with ID:", customerId);
+Basket.saveCustomerBasketItems = (req, result) => {
+    // const ticketDate = format(
+    //     new Date(),
+    //     "EEE MMM dd yyyy HH:mm:ss 'GMT'XXX"
+    // );
 
-        dbConn.query('SELECT CustomerID, LoyaltyTier FROM store_loyalty.tblloyaltycustomers WHERE CustomerID = ?', [customerId], (err, res) => {
+    const basketID = basketid
+    const customerID = customerid
+
+    // Ensure there are product prices available
+    if (!customerBasketPrices.length) {
+            console.error('No product prices found. Proceeding with zero price for all products.');
+    }
+
+    // Set the current time for insertion
+    const insertionTime = new Date().toISOString();
+
+    //process each product in customersBasketPrices
+    const queries = customerBasketPrices.map(({ product, prices}, index) => {
+        const price = prices?.[0]?.selling_incl_1 || 0;
+
+        // Retrieve the quantity for the product from the global variable (basketQuantity)
+        // Assuming basketQuantity corresponds to the same index as the product
+        const quantity = basketQuantity?.[index] || 1;
+
+        const query = `INSERT INTO store_loyalty.tblbasketinfo_items(basket_id, customer_id, product, quantity, product_price, insertion_time)VALUES(?, ?, ?, ?, ?, ?)`;
+
+        return new Promise((resolve, reject) => {
+            dbConn.query(query, [basketID, customerID, product, quantity, price, insertionTime], (err, res) => {
+                if (err) {
+                    console.error(`Error saving item: ${product}`, err); // log any error that occurs
+                    rejecct(err);
+                } else {
+                    console.log(`Item saved successsfully: ${product}`); // log success
+                }
+            });
+        });
+    });
+
+    Promise.all(queries)
+        .then((results) => {
+            console.log('All basket items saved successfully.'); // log success message
+            result(null, results); // return results to the callback
+        })
+        .catch((err) => {
+            console.error('Error saving customer basket items:', err); // log error message
+            result(err, null); //return error to callback
+        })
+
+
+    // dbConn.query(`INSERT INTO store_loyalty.tblbasketinfo_items(${basketid}, ${customerid}, ${products}, ${basketQuantity}, ${product_price}, insertion_time)VALUES(?, ?, ?, ?, ?, ?)`, (err, res) => {
+    //     if (err) {
+    //         console.log('Error while saving the customers basket items:' + err);
+    //         result(err, null);
+    //     } else {
+    //         console.log('Saving the customers basket items was Successful:', res);
+    //         result(null, res);
+    //     }
+    // });
+}
+
+Basket.checkLoyaltyCustomer = (customerId, result) => {
+    //console.log("Checking loyalty for customer with ID:", customerId);
+    const customerID = customerid
+
+        dbConn.query('SELECT CustomerID, LoyaltyTier FROM store_loyalty.tblloyaltycustomers WHERE CustomerID = ?', [customerID], (err, res) => {
             if (err) {
                 //console.log('Error while checking if the customer is apart of the loyalty program' + err);
                 result(null, err);
@@ -315,25 +377,28 @@ Basket.checkLoyaltyCustomer = (customerId, result) => {
         });
 }
 
-Basket.getProductPrices = (product, result) => {
-    //console.log('Purchased Product', product); // Add logging to see the product name
-    dbConn.query('SELECT mstn.selling_incl_1, mstn.special_price_incl, COALESCE(inv.description_1, inv.description_2) AS description FROM store_loyalty.tblmultistoretrn mstn JOIN store_loyalty.tblinventory inv ON mstn.item_code = inv.item_code WHERE COALESCE(inv.description_1, inv.description_2) = ?', [product], (err, res) => {
-        if (err) {
-            //console.error('Error while getting basket information:', err); // Better error logging
-            result(err, null);  // Notice the order: return error first
-        } else if (res.length === 0) {
-            //Console.warn('No data found for basket ID:', basketId); // Log when no data is returned
-            result(null, { message: `No prices found for for the product ${product}` }); // Return a meaningful message if no data
-        } else {
-            //console.log('Successfully retrieved basket information:', res);
+// Basket.getCustomerBasket = (basketId, result) => {
+//         // const basketId = req.params.basket_id;
+//         console.log('Fetching basket with ID:', basketId); // Add logging to see the basket_id
 
-            result(null, res);
-        }
-    });
-};
+//         dbConn.query('SELECT basket_id, customer_id, product, total_amount, purchase_date FROM store_loyalty.tblbasketinfo WHERE basket_id = ?', [basketId], (err, res) => {
+//             if (err) {
+//                 //console.error('Error while getting basket information:', err); // Better error logging
+//                 result(err, null);  // Notice the order: return error first
+//             } else if (res.length === 0) {
+//                 //Console.warn('No data found for basket ID:', basketId); // Log when no data is returned
+//                 result(null, { message: 'No basket found with this ID' }); // Return a meaningful message if no data
+//             } else {
+//                 //console.log('Successfully retrieved basket information:', res);
 
+//                 result(null, res);
+//             }
+//         });
+// };
+
+//basketProducts
 Basket.getProductSpecials = (product, result) => {
-        dbConn.query('SELECT special_id, product_description, special_price from store_loyalty.tblspecialitems where product_description = ?', [product], (err, res) => {
+        dbConn.query(`SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spi.product_description, spi.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id WHERE sp.special_type = 'Special' AND sp.isActive = 1 AND spi.product_description = ? AND sp.start_date <= CURDATE() AND sp.expiry_date >= CURDATE()`, [product], (err, res) => {
             if (err) {
                 //console.log('Error while checking the product specials for the purchased item' + err);
                 result(null, err);
@@ -345,7 +410,7 @@ Basket.getProductSpecials = (product, result) => {
 }
 
 Basket.getProductCombinedSpecials = (product, result) => {
-    dbConn.query('SELECT special_id, special_group_id, item_code, product_description, special_price FROM store_loyalty.tblspecials_combinedgroup where product_description = ?', [product], (err, res) => {
+    dbConn.query(`SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, spcg.special_group_id, spcg.product_description, spcg.special_price FROM store_loyalty.tblspecials sp JOIN store_loyalty.tblspecials_combinedgroup spcg ON sp.special_id = spcg.special_id  WHERE sp.special_type = 'Combined Special' AND sp.isActive = 1 AND spcg.product_description = ? AND sp.start_date <= CURDATE() AND sp.expiry_date >= CURDATE()`, [product], (err, res) => {
         if (err) {
             //console.log('Error while checking the product specials for the purchased item' + err);
             result(null, err);
@@ -380,7 +445,7 @@ Basket.saveFinalTransaction = (basketid, customerid, product, quantity, sellingP
         });
 }
 
-event.emit('get-customer-basket', 16)
+// event.emit('get-customer-basket', 16)
 
 
 module.exports = Basket;

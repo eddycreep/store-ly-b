@@ -11,17 +11,17 @@ require('dotenv').config({ path: './configuration.env' });
  * @openapi
  * /basket/postcustomerbasket:
  *   post:
- *     summary: Send the basket information with items
+ *     summary: Save basket information
  *     tags:
  *       - API
- *     description: Sends the customers basket information with items.
+ *     description: Adds customer basket in the store loyalty system.
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             properties: 
+ *             properties:
  *               basket_id:
  *                 type: integer
  *                 description: ID of the basket
@@ -31,24 +31,24 @@ require('dotenv').config({ path: './configuration.env' });
  *                 description: ID of the customer
  *                 example: 202
  *               product:
- *                 type: string
- *                 description: Name of the product
- *                 example: "Apples"
+ *                 type: array
+ *                 description: Name of the products
+ *                 example: []
  *               quantity:
  *                 type: integer
- *                 description: Quantity of the products purchased
+ *                 description: Quantity of the product purchased
  *                 example: 3
  *               purchase_date:
  *                 type: string
- *                 description: The date in which the basket was purchased
- *                 example: 1.99
+ *                 description: Date of the purchased basket
+ *                 example: '2023-10-14 13:25:00'
  *               total_amount:
- *                 type: integer
- *                 description: Total Amount of the basket
+ *                 type: number
+ *                 description: Total basket amount
  *                 example: 45.99
  *               payment_method:
  *                 type: string
- *                 description: The Payment method of the basket
+ *                 description: Payment method of the basket
  *                 example: Cash
  *     responses:
  *       200:
@@ -61,7 +61,7 @@ require('dotenv').config({ path: './configuration.env' });
  *                 message:
  *                   type: string
  *                   example: "Success"
- *                 data: basket_id, customer_id, product, quantity, purchase_date, total_amount, payment_method
+ *                 data:
  *                   type: object
  *                   properties:
  *                     basket_id:
@@ -69,14 +69,13 @@ require('dotenv').config({ path: './configuration.env' });
  *                     customer_id:
  *                       type: integer
  *                     product:
- *                       type: string
+ *                       type: array
  *                     quantity:
  *                       type: integer
  *                     purchase_date:
  *                       type: string
  *                     total_amount:
- *                       type: decimal
- *                       format: float
+ *                       type: number
  *                     payment_method:
  *                       type: string
  *       500:
@@ -93,42 +92,43 @@ require('dotenv').config({ path: './configuration.env' });
  *                   type: string
  *                   description: Error details
  */
-// router.get('/postcustomerbasket', BasketController.postCustomerBasket); 
-
+router.post('/savecustomerbasket', BasketController.saveCustomerBasket); 
 
 /**
  * @openapi
- * /basket/getcustomerbasket/{basket_id}:
+ * /basket/getproductspecial/{product_description}:
  *   get:
- *     summary: Get customer basket by ID
+ *     summary: Check individual product specials
  *     tags:
  *       - API
- *     description: Retrieves the customers basket based on the basket ID
+ *     description: Determine if there are any product specials
  *     parameters:
  *       - in: path
- *         name: basket_id
+ *         name: product_description
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the basket
+ *         description: Name of the product
  *     responses:
  *       200:
- *         description: Customers basket was successfully retrieved, now checking if customer is on loyalty list
+ *         description: Successfully retrieved product special using the product description
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 basket_id:
- *                   type: integer
- *                   description: ID of the basket
+ *                 product_description:
+ *                   type: string
+ *                   description: Product description
  *       404:
- *         description: Basket not found
+ *         description: The product does not have any specials available.  Now checking if the product is linked to any combined special
  *       500:
  *         description: Internal server error
  */
-router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); 
+router.get('/getproductspecial/:product_description', BasketController.getProductSpecials);
 
+
+router.post('/savecustomerbasketitems', BasketController.saveCustomerBasketItems); 
 
 /**
  * @openapi
@@ -166,6 +166,41 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 
 /**
  * @openapi
+ * /basket/getcustomerbasket/{basket_id}:
+ *   get:
+ *     summary: Get customer basket by ID
+ *     tags:
+ *       - API
+ *     description: Retrieves the customers basket based on the basket ID
+ *     parameters:
+ *       - in: path
+ *         name: basket_id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the basket
+ *     responses:
+ *       200:
+ *         description: Customers basket was successfully retrieved, now checking if customer is on loyalty list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 basket_id:
+ *                   type: integer
+ *                   description: ID of the basket
+ *       404:
+ *         description: Basket not found
+ *       500:
+ *         description: Internal server error
+ */
+// router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); 
+
+
+
+/**
+ * @openapi
  * /basket/checkloyalty/{customer_id}:
  *   get:
  *     summary: Determine if customer is on loyalty
@@ -198,40 +233,6 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 router.get('/getproductprices/:product_description', BasketController.getProductPrices);
 
 //get-product-specials
-
-
-/**
- * @openapi
- * /basket/getproductspecial/{product_description}:
- *   get:
- *     summary: Check individual product specials
- *     tags:
- *       - API
- *     description: Determine if there are any product specials
- *     parameters:
- *       - in: path
- *         name: product_description
- *         required: true
- *         schema:
- *           type: string
- *         description: Name of the product
- *     responses:
- *       200:
- *         description: Successfully retrieved product special using the product description
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 product_description:
- *                   type: string
- *                   description: Product description
- *       404:
- *         description: The product does not have any specials available.  Now checking if the product is linked to any combined special
- *       500:
- *         description: Internal server error
- */
-router.get('/getproductspecial/:product_description', BasketController.getProductSpecials);
 
 
 /**
@@ -292,9 +293,9 @@ router.get('/getproductcombinedspecial/:product_description', BasketController.g
  *                 description: ID of the customer
  *                 example: 202
  *               product:
- *                 type: string
+ *                 type: array
  *                 description: Name of the product
- *                 example: "Apples"
+ *                 example: []
  *               quantity:
  *                 type: integer
  *                 description: Quantity of the product purchased
@@ -477,6 +478,7 @@ router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems);
  *                   type: string
  *                   description: Error details
  */
-router.post('/savefinaltransaction', BasketController.saveFinalTransaction); 
+router.post('/savefinaltransaction', BasketController.saveFinalTransaction);
+
 
 module.exports = router;
