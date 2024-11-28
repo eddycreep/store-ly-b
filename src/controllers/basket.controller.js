@@ -1,28 +1,45 @@
 const BasketModel = require('../models/basket.model');
 
 
-// exports.postCustomerBasket = (req, res) => {
-//   AdminModel.postCustomerBasket(req, (err, special) => {
-//   if (err) {
-//       special.message = "Post Customer Basket - Failed";
-//       res.send(err);
-//       process.exit(1);
-//   }
-//       special.message = "Post Customer Basket - Success";
-//       res.send(special);
-//   })
-// }
+exports.saveCustomerBasket = (req, res) => {
+  BasketModel.saveCustomerBasket(req, (err, special) => {
+  if (err) {
+      special.message = "Save Customer Basket - Failed";
+      res.send(err);
+      process.exit(1);
+  }
+      special.message = "Save Customer Basket - Success";
+      res.send(special);
+  })
+}
 
+exports.getProductPrices = (req, res) => {
+  const productDescriptions = req.params.product_description.split(','); // Accept multiple products as a comma-separated string
 
-exports.getCustomerBasket = (req, res) => {
-  // Pass the `req` object to access `req.params.basket_id` in the model
-  BasketModel.getCustomerBasket(req, (err, basket) => {
-    if (err) {
-      res.status(500).json({ error: err });
-      return;
-    }
-    //res.status(200).json
-    res.send(basket);
+  BasketModel.getProductPrices(productDescriptions, (err, prices) => {
+      if (err) {
+          console.error("Error fetching product prices:", err);
+          return res.status(500).send({ message: "Failed to fetch product prices", error: err });
+      }
+
+      res.status(200).send({
+          message: "Product prices retrieved successfully",
+          data: prices,
+      });
+  });
+};
+
+exports.saveCustomerBasketItems = (req, res) => {
+  BasketModel.saveCustomerBasketItems(req, (err, special) => {
+      if (err) {
+          console.error("Save Customer Basket Items - Failed:", err);
+          return res.status(500).send({ message: "Failed to save basket items", error: err });
+      }
+
+      res.status(200).send({
+          message: "Save Customer Basket Items - Success",
+          data: special,
+      });
   });
 };
 
@@ -43,16 +60,17 @@ exports.checkLoyaltyCustomer = (req, res) => {
   });
 };
 
-exports.getProductPrices = (req, res) => {
-  BasketModel.getProductPrices(req, (err, product) => {
-    if (err) {
-      res.status(500).json({ error: err });
-      return;
-    }
-    //res.status(200).json
-    res.send(product);
-  });
-};
+
+// exports.getCustomerBasket = (req, res) => {
+//   BasketModel.getCustomerBasket(req, (err, basket) => {
+//     if (err) {
+//       res.status(500).json({ error: err });
+//       return;
+//     }
+//     //res.status(200).json
+//     res.send(basket);
+//   });
+// };
 
 exports.getProductSpecials = (req, res) => {
   BasketModel.getProductSpecials(req, (err, basket) => {
