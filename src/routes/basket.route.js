@@ -96,36 +96,36 @@ router.post('/savecustomerbasket', BasketController.saveCustomerBasket);
 
 /**
  * @openapi
- * /basket/getproductspecial/{product_description}:
+ * /basket/checkloyalty/{customer_id}:
  *   get:
- *     summary: Check individual product specials
+ *     summary: Determine if customer is on loyalty
  *     tags:
  *       - API
- *     description: Determine if there are any product specials
+ *     description: Determine if customer is on the loyalty program
  *     parameters:
  *       - in: path
- *         name: product_description
+ *         name: customer_id
  *         required: true
  *         schema:
  *           type: string
- *         description: Name of the product
+ *         description: ID of the customer
  *     responses:
  *       200:
- *         description: Successfully retrieved product special using the product description
+ *         description: Customer is on the loyalty program and specials can be applied, now checking product prices
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 product_description:
- *                   type: string
- *                   description: Product description
+ *                 customer_id:
+ *                   type: integer
+ *                   description: ID of the customer
  *       404:
- *         description: The product does not have any specials available.  Now checking if the product is linked to any combined special
+ *         description: The customer is not found on the loyalty program, no specials can be applied
  *       500:
  *         description: Internal server error
  */
-router.get('/getproductspecial/:product_description', BasketController.getProductSpecials);
+router.get('/getproductprices/:product_description', BasketController.getProductPrices);
 
 
 router.post('/savecustomerbasketitems', BasketController.saveCustomerBasketItems); 
@@ -198,41 +198,40 @@ router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer);
 // router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); 
 
 
+//get-product-specials
 
 /**
  * @openapi
- * /basket/checkloyalty/{customer_id}:
+ * /basket/getproductspecial/{product_description}:
  *   get:
- *     summary: Determine if customer is on loyalty
+ *     summary: Check individual product specials
  *     tags:
  *       - API
- *     description: Determine if customer is on the loyalty program
+ *     description: Determine if there are any product specials
  *     parameters:
  *       - in: path
- *         name: customer_id
+ *         name: product_description
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the customer
+ *         description: Name of the product
  *     responses:
  *       200:
- *         description: Customer is on the loyalty program and specials can be applied, now checking product prices
+ *         description: Successfully retrieved product special using the product description
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 customer_id:
- *                   type: integer
- *                   description: ID of the customer
+ *                 product_description:
+ *                   type: string
+ *                   description: Product description
  *       404:
- *         description: The customer is not found on the loyalty program, no specials can be applied
+ *         description: The product does not have any specials available.  Now checking if the product is linked to any combined special
  *       500:
  *         description: Internal server error
  */
-router.get('/getproductprices/:product_description', BasketController.getProductPrices);
-
-//get-product-specials
+router.get('/getproductspecial/:product_description', BasketController.getProductSpecials);
 
 
 /**
