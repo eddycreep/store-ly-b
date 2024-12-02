@@ -9,7 +9,7 @@ require('dotenv').config({ path: './configuration.env' });
 
 /**
  * @openapi
- * /basket/postcustomerbasket:
+ * /basket/savecustomerbasket:
  *   post:
  *     summary: Save basket information
  *     tags:
@@ -94,45 +94,132 @@ require('dotenv').config({ path: './configuration.env' });
  */
 router.post('/savecustomerbasket', BasketController.saveCustomerBasket); 
 
+
 /**
  * @openapi
- * /basket/checkloyalty/{customer_id}:
+ * /basket/getproductprices/{product_description}:
  *   get:
- *     summary: Determine if customer is on loyalty
+ *     summary: Retrieve product prices
  *     tags:
  *       - API
- *     description: Determine if customer is on the loyalty program
+ *     description: Fetch the prices of the purchased
  *     parameters:
  *       - in: path
- *         name: customer_id
+ *         name: product_description
  *         required: true
  *         schema:
  *           type: string
- *         description: ID of the customer
+ *         description: Product description
  *     responses:
  *       200:
- *         description: Customer is on the loyalty program and specials can be applied, now checking product prices
+ *         description: Product Prices have Returned
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 customer_id:
+ *                 product_description:
  *                   type: integer
- *                   description: ID of the customer
+ *                   description: the purchased item
  *       404:
- *         description: The customer is not found on the loyalty program, no specials can be applied
+ *         description: The Product cannot be found
  *       500:
  *         description: Internal server error
  */
 router.get('/getproductprices/:product_description', BasketController.getProductPrices);
 
 
-router.post('/savecustomerbasketitems', BasketController.saveCustomerBasketItems); 
+/**
+ * @openapi
+ * /basket/savecustomerbasketitems:
+ *   post:
+ *     summary: Save items linked to basket
+ *     tags:
+ *       - API
+ *     description: Saves all purchased items linked to basket
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               basket_id:
+ *                 type: integer
+ *                 description: ID of the basket
+ *                 example: 101
+ *               customer_id:
+ *                 type: integer
+ *                 description: ID of the customer
+ *                 example: 202
+ *               product:
+ *                 type: array
+ *                 description: Name of the products
+ *                 example: []
+ *               quantity:
+ *                 type: integer
+ *                 description: Quantity of the product purchased
+ *                 example: 3
+ *               purchase_date:
+ *                 type: string
+ *                 description: Date of the purchased basket
+ *                 example: '2023-10-14 13:25:00'
+ *               total_amount:
+ *                 type: number
+ *                 description: Total basket amount
+ *                 example: 45.99
+ *               payment_method:
+ *                 type: string
+ *                 description: Payment method of the basket
+ *                 example: Cash
+ *     responses:
+ *       200:
+ *         description: Basket Items saved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Success"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     basket_id:
+ *                       type: integer
+ *                     customer_id:
+ *                       type: integer
+ *                     product:
+ *                       type: array
+ *                     quantity:
+ *                       type: integer
+ *                     purchase_date:
+ *                       type: string
+ *                     total_amount:
+ *                       type: number
+ *                     payment_method:
+ *                       type: string
+ *       500:
+ *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Failed"
+ *                 error:
+ *                   type: string
+ *                   description: Error details
+ */
+router.post('/savecustomerbasketitems', BasketController.saveCustomerBasketItems);
+
 
 /**
  * @openapi
- * /basket/checkloyalty/{customer_id}:
+ * /basket/checkloyalty/{CustomerID}:
  *   get:
  *     summary: Determine if customer is on loyalty
  *     tags:
@@ -140,62 +227,28 @@ router.post('/savecustomerbasketitems', BasketController.saveCustomerBasketItems
  *     description: Determine if customer is on the loyalty program
  *     parameters:
  *       - in: path
- *         name: customer_id
+ *         name: CustomerID
  *         required: true
  *         schema:
  *           type: string
  *         description: ID of the customer
  *     responses:
  *       200:
- *         description: Customer is on the loyalty program and specials can be applied, now checking product prices
+ *         description: Customer is on the loyalty program and specials can be applied
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 customer_id:
+ *                 CustomerID:
  *                   type: integer
  *                   description: ID of the customer
  *       404:
- *         description: The customer is not found on the loyalty program, no specials can be applied
+ *         description: Customer not found
  *       500:
  *         description: Internal server error
  */
-router.get('/checkloyalty/:customer_id', BasketController.checkLoyaltyCustomer); 
-
-
-/**
- * @openapi
- * /basket/getcustomerbasket/{basket_id}:
- *   get:
- *     summary: Get customer basket by ID
- *     tags:
- *       - API
- *     description: Retrieves the customers basket based on the basket ID
- *     parameters:
- *       - in: path
- *         name: basket_id
- *         required: true
- *         schema:
- *           type: string
- *         description: ID of the basket
- *     responses:
- *       200:
- *         description: Customers basket was successfully retrieved, now checking if customer is on loyalty list
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 basket_id:
- *                   type: integer
- *                   description: ID of the basket
- *       404:
- *         description: Basket not found
- *       500:
- *         description: Internal server error
- */
-// router.get('/getcustomerbasket/:basket_id', BasketController.getCustomerBasket); 
+router.get('/checkloyalty/:CustomerID', BasketController.checkLoyaltyCustomer); 
 
 
 //get-product-specials
@@ -266,108 +319,6 @@ router.get('/getproductspecial/:product_description', BasketController.getProduc
  *         description: Internal server error
  */
 router.get('/getproductcombinedspecial/:product_description', BasketController.getProductCombinedSpecials); 
-
-
-/**
- * @openapi
- * /basket/savebasketinfoitems:
- *   post:
- *     summary: Save basket information items
- *     tags:
- *       - API
- *     description: Adds items to the customer basket in the store loyalty system.
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               basket_id:
- *                 type: integer
- *                 description: ID of the basket
- *                 example: 101
- *               customer_id:
- *                 type: integer
- *                 description: ID of the customer
- *                 example: 202
- *               product:
- *                 type: array
- *                 description: Name of the product
- *                 example: []
- *               quantity:
- *                 type: integer
- *                 description: Quantity of the product purchased
- *                 example: 3
- *               sellingPrice:
- *                 type: number
- *                 format: float
- *                 description: Price per unit of the product
- *                 example: 1.99
- *               discountApplied:
- *                 type: number
- *                 format: float
- *                 description: Discount applied to the product
- *                 example: 0.5
- *               totalAmount:
- *                 type: number
- *                 format: float
- *                 description: Total price after discount
- *                 example: 5.47
- *               insertTime:
- *                 type: string
- *                 format: date-time
- *                 description: Time of insertion
- *                 example: "2023-10-05T14:48:00.000Z"
- *     responses:
- *       200:
- *         description: Basket information successfully saved
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Success"
- *                 data:
- *                   type: object
- *                   properties:
- *                     basket_id:
- *                       type: integer
- *                     customer_id:
- *                       type: integer
- *                     product:
- *                       type: string
- *                     quantity:
- *                       type: integer
- *                     product_price:
- *                       type: number
- *                       format: float
- *                     discount_applied:
- *                       type: number
- *                       format: float
- *                     final_price:
- *                       type: number
- *                       format: float
- *                     insertion_time:
- *                       type: string
- *                       format: date-time
- *       500:
- *         description: Internal server error
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: "Failed"
- *                 error:
- *                   type: string
- *                   description: Error details
- */
-// router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems); 
 
 
 /**
@@ -480,6 +431,7 @@ router.get('/getproductcombinedspecial/:product_description', BasketController.g
 router.post('/savefinaltransaction', BasketController.saveFinalTransaction);
 
 
+// TIERS
 
 // router.post('/add-tier-reward', BasketController.addTierReward);
 
