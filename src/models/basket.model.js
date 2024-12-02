@@ -58,13 +58,11 @@ var Basket = function (user) {
 //EVENT LISTENERS BELOW
 // Event listener to trigger getProductPrices automatically
 event.on('get-product-prices', (products) => {
-    // Call the getProductPrices function directly, passing the products
-    //console.log("FETCHING PRODUCT PRICES: ");
     Basket.getProductPrices(products, (err, prices) => {
         // if (err) {
         //     console.error("Error fetching product prices: ", err);
         // } else {
-        //     console.log("PRODUCT PRCIES: ", prices);
+        //     console.log("PRODUCT PRICES: ", prices);
         // }
     });
 });
@@ -74,12 +72,6 @@ event.on('save-customer-basket-items', () => {
     //console.log("Triggering saveCustomerBasketItems event listener...");
 
     Basket.saveCustomerBasketItems((err, res) => {
-        // if (err) {
-        //     console.error("Error saving customer basket items:", err);
-        // } else {
-        //     console.log("Customer basket items saved successfully:", res);
-        //     event.emit('check-loyalty-customer'); // Trigger the next step
-        // }
         event.emit('check-loyalty-customer'); // Trigger the next step
     });
 });
@@ -89,44 +81,18 @@ event.on('check-loyalty-customer', () => {
     //console.log("Triggering checkLoyaltyCustomer event listener...");
 
     Basket.checkLoyaltyCustomer(customerid, (err, res) => {
-        if (err) {
-            console.error("Error checking loyalty customer:", err);
-        } else {
-            console.log("Loyalty customer checked successfully:", res);
-        }
     });
 });
 
 // Event listener to trigger getProductSpecials
 event.on('get-product-specials', (product) => {
     Basket.getProductSpecials(product, (err, specials) => {
-        if (err) {
-            console.error("Error fetching product specials:", err);
-        } else if (specials.lengh === 0) {
-            console.log("NO SPECIALS FOR PURCHASED PRODUCTS:", specials);
-
-            // // Check if any specials were returned
-            // if (specials && specials.length > 0) {
-            //     console.log("NORMAL PRODUCT SPECIALS FOUND: ", specials);
-            //     console.log("NOW CHECKING COMBINED SPECIALS...");
-            // } else {
-            //     console.log("THERE ARE NO SPECIALS FOR THE INDIVIDUAL PRODUCTS, CHECKING COMBINED SPECIALS...");
-            // }
-
-        } else {
-            console.log("NORMAL PRODUCT SPECIALS FETCHED SUCCESSFULLY: ", specials);
-        }
     });
 });
 
 // Event listener to trigger getProductCombinedSpecials
 event.on('get-product-combined-specials', (product) => {
     Basket.getProductCombinedSpecials(product, (err, combinedSpecials) => {
-        if (err) {
-            console.error("Error fetching combined specials:", err);
-        } else {
-            console.log("Combined specials fetched successfully:", combinedSpecials);
-        }
     });
 });
 
@@ -168,7 +134,7 @@ Basket.saveCustomerBasket = (req, result) => {
 }
 
 Basket.getProductPrices = (product, result) => {
-    console.log('Products in Basket', basketProducts); 
+    //console.log('Products in Basket', basketProducts); 
 
     if (!Array.isArray(basketProducts) || basketProducts.length === 0) {
         return result({ message: 'No products provided in the basket'}, null)
@@ -182,11 +148,29 @@ Basket.getProductPrices = (product, result) => {
                 if (err) {
                     console.error(`Error fetching price for product: ${product}`, err);
                     reject(err);
+
                 } else if (res.length === 0) {
                     console.log(`No price found for product: ${product}`);
-                    resolve({ product, message: "Price not found" });
+                    resolve({ product, selling_incl_1: 0.0000, special_price_incl: '0.0000' });
+
                 } else {
-                    resolve({ product, prices: res})
+                    const priceData = res[0];
+
+                    // Validate that description (product name) is not null or undefined
+                    const resolvedProduct = priceData.description || 'Unknown Product';
+
+                    // Log the resolved object to the console
+                    console.log({
+                        product: resolvedProduct,
+                        selling_incl_1: parseFloat(priceData.selling_incl_1),
+                        special_price_incl: priceData.special_price_incl || '0.0000',
+                    });
+
+                    resolve({
+                        product: resolvedProduct,
+                        selling_incl_1: parseFloat(priceData.selling_incl_1),
+                        special_price_incl: priceData.special_price_incl || '0.0000',
+                    });
                 }
             })
         })
@@ -201,6 +185,7 @@ Basket.getProductPrices = (product, result) => {
 
             // Emit event to trigger saveCustomerBasketItems
             event.emit('save-customer-basket-items');
+            console.log('now saving customers basket items');
         })
         .catch((err) => {
             //console.error('Error fetching product prices:', err);
@@ -291,15 +276,17 @@ Basket.getProductSpecials = (products, result) => {
     }
 
     const query = `
-        SELECT 
-            sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, 
+            SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, 
             sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, 
-            spi.product_description, spi.special_price 
+        spcg.special_group_id, spcg.product_description, spcg.special_price 
         FROM store_loyalty.tblspecials sp
-        JOIN store_loyalty.tblspecialitems spi ON sp.special_id = spi.special_id
-        WHERE sp.special_type = 'Special' AND sp.isActive = 1
-          AND spi.product_description = ?
-          AND sp.start_date <= CURDATE() AND sp.expiry_date >= CURDATE()
+        JOIN store_loyalty.tblspecials_combinedgroup spcg 
+        ON sp.special_id = spcg.special_id
+        WHERE sp.special_type = 'Combined Special' 
+        AND sp.isActive = 1 
+        AND spcg.product_description = 'SWITCH 440ML'
+        AND sp.start_date <= CURDATE() 
+        AND sp.expiry_date >= CURDATE()
     `;
 
     const queries = products.map((product) => {
@@ -319,17 +306,20 @@ Basket.getProductSpecials = (products, result) => {
     });
 
     Promise.all(queries)
-        .then((results) => {
-            //console.log("Normal Product specials retrieved successfully:", results);
-            result(null, results); // Send all results to the controller
+    .then((results) => {
+        console.log(
+            "Returned Individual Product Specials: ",
+            JSON.stringify(results, null, 2) // Pretty-print the JSON
+        );
 
-            // Optionally, emit an event for combined specials check
-            event.emit("get-product-combined-specials", results);
-        })
-        .catch((err) => {
-            //console.error("Error fetching normal product specials:", err);
-            result(err, null);
-        });
+        event.emit("get-product-combined-specials", results);
+        result(null, results); // Send formatted results to the controller
+    })
+    .catch((err) => {
+        console.error("Error fetching normal product specials:", err);
+        result(err, null);
+    });
+
 };
 
 
@@ -342,13 +332,15 @@ Basket.getProductCombinedSpecials = (products, result) => {
   
     // Fetch all active combined specials
     const query = `
-    SELECT sp.special_id, sp.special_name, sp.special_type, sp.start_date, sp.expiry_date, 
+    SELECT sp.special_id, sp.special_name, sp.special, sp.special_type, sp.store_id, 
+            sp.start_date, sp.expiry_date, sp.special_value, sp.isActive, 
            spcg.special_group_id, spcg.product_description, spcg.special_price 
     FROM store_loyalty.tblspecials sp
     JOIN store_loyalty.tblspecials_combinedgroup spcg 
       ON sp.special_id = spcg.special_id
     WHERE sp.special_type = 'Combined Special' 
       AND sp.isActive = 1 
+	  AND spcg.product_description = ?
       AND sp.start_date <= CURDATE() 
       AND sp.expiry_date >= CURDATE()
   `;
@@ -365,7 +357,7 @@ Basket.getProductCombinedSpecials = (products, result) => {
       }
   
       // Debug log: fetched specials
-      console.log("Fetched Combined Specials:", allSpecials);
+      console.log("Returned Combined Product Specials: ", allSpecials);
   
       const groupTracker = {};
   
@@ -408,7 +400,6 @@ Basket.getProductCombinedSpecials = (products, result) => {
       result(null, matchedSpecials);
     });
 };
-
 
 
 Basket.saveFinalTransaction = (basketid, customerid, product, quantity, sellingPrice, newDiscountedPrice, totalamount, newTotalDiscBasketAmount, purchasedate, result) => {
