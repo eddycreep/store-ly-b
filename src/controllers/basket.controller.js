@@ -1,6 +1,5 @@
 const BasketModel = require('../models/basket.model');
 
-
 exports.saveCustomerBasket = (req, res) => {
   BasketModel.saveCustomerBasket(req, (err, special) => {
   if (err) {
@@ -51,60 +50,52 @@ exports.checkLoyaltyCustomer = (req, res) => {
     }
 
     if (!customer || customer.length === 0) {
-      console.log("No customer found, exiting the process");
+      console.log("THE CUSTOMER WAS NOT FOUND IN THE LOYALTY SYSTEM");
       res.status(404).json({ message: "Customer not found" });
       process.exit(1) // Exit the process if no customer is found
+
     } else {
       res.send(customer);
     }
   });
 };
 
-
-// exports.getCustomerBasket = (req, res) => {
-//   BasketModel.getCustomerBasket(req, (err, basket) => {
-//     if (err) {
-//       res.status(500).json({ error: err });
-//       return;
-//     }
-//     //res.status(200).json
-//     res.send(basket);
-//   });
-// };
-
 exports.getProductSpecials = (req, res) => {
-  BasketModel.getProductSpecials(req, (err, basket) => {
-    if (err) {
-      res.status(500).json({ error: err });
-      return;
-    }
-    //res.status(200).json
-    res.send(basket);
+  const productDescriptions = req.params.product_description.split(','); // Accept multiple products as a comma-separated string
+
+  BasketModel.getProductSpecials(productDescriptions, (err, specials) => {
+      if (err) {
+          console.error("Error fetching product specials:", err);
+          return res.status(500).send({ message: "Failed to fetch product specials", error: err });
+      }
+
+      res.status(200).send({
+          message: "Product specials retrieved successfully",
+          data: specials,
+      });
   });
 };
 
+// Controller function for combined specials
 exports.getProductCombinedSpecials = (req, res) => {
-  BasketModel.getProductCombinedSpecials(req, (err, basket) => {
+  const { products } = req.body; // Expect products in the request body as an array
+
+  BasketModel.getProductCombinedSpecials(products, (err, combinedSpecials) => {
     if (err) {
-      res.status(500).json({ error: err });
-      return;
+      console.error("Error fetching combined specials:", err);
+      return res.status(500).send({
+        message: "Failed to fetch combined specials",
+        error: err,
+      });
     }
-    //res.status(200).json
-    res.send(basket);
+
+    res.status(200).send({
+      message: "Combined specials retrieved successfully",
+      data: combinedSpecials,
+    });
   });
 };
 
-exports.saveBasketInfoItems = (req, res) => {
-  BasketModel.saveBasketInfoItems(req, (err, client) => {
-    if (err) {
-      client.message = "Failed";
-      res.send(err);
-      process.exit(1);
-    }
-    client.message = "Success";
-    res.send(client);
-  })
-}
 
 exports.saveFinalTransaction = (req, res) => {
   BasketModel.saveFinalTransaction(req, (err, client) => {
@@ -117,3 +108,42 @@ exports.saveFinalTransaction = (req, res) => {
     res.send(client);
   })
 }
+
+
+// exports.addTierReward = (req, res) => {
+//   BasketModel.addTierReward(req, (err, client) => {
+//     if (err) {
+//       client.message = "Add Tier Reward - Failed";
+//       res.send(err);
+//       process.exit(1);
+//     }
+//     client.message = "Add Tier Reward - Success";
+//     res.send(client);
+//   })
+// }
+
+
+// exports.editTierReward = (req, res) => {
+//   BasketModel.saveFinalTransaction(req, (err, client) => {
+//     if (err) {
+//       client.message = "Edit Tier Reward - Failed";
+//       res.send(err);
+//       process.exit(1);
+//     }
+//     client.message = "Edit Tier Reward - Success";
+//     res.send(client);
+//   })
+// }
+
+
+// exports.deleteTierReward = (req, res) => {
+//   BasketModel.saveFinalTransaction(req, (err, client) => {
+//     if (err) {
+//       client.message = "Delete Tier Reward - Failed";
+//       res.send(err);
+//       process.exit(1);
+//     }
+//     client.message = "Delete Tier Reward - Success";
+//     res.send(client);
+//   })
+// }

@@ -367,7 +367,7 @@ router.get('/getproductcombinedspecial/:product_description', BasketController.g
  *                   type: string
  *                   description: Error details
  */
-router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems); 
+// router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems); 
 
 
 /**
@@ -478,6 +478,14 @@ router.post('/savebasketinfoitems', BasketController.saveBasketInfoItems);
  *                   description: Error details
  */
 router.post('/savefinaltransaction', BasketController.saveFinalTransaction);
+
+
+
+// router.post('/add-tier-reward', BasketController.addTierReward);
+
+// router.patch('/edit-tier-reward/:uid', BasketController.editTierReward);
+
+// router.delete('/delete-tier-reward/:uid', BasketController.deleteTierReward);
 
 
 module.exports = router;
