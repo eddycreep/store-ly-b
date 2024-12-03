@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const swaggerDocs = require('./src/utils/swagger.ts');
+const swaggerDocs = require('./src/utils/swagger.js');
 
 const corsOptions = {
     origin: '*',
