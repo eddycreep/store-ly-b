@@ -8,7 +8,7 @@ const options = {
         openapi: '3.0.0',
         info: {
             title: 'Store API Docs',
-            version,
+            version: version, // Explicitly use the version property for clarity
         },
         components: {
             securitySchemas: {
