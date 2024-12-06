@@ -11,7 +11,7 @@ router.post('/insertauditlog', UserController.InsertAuditLog);
 router.post('/login', (req, res) => {
   console.log(req.body)
   dbConn.query(
-    `SELECT * FROM store_loyalty.user WHERE username = ${dbConn.escape(req.body.username)} and password = ${dbConn.escape(req.body.password)};`,
+    `SELECT * FROM loyalty_program.user WHERE username = ${dbConn.escape(req.body.username)} and password = ${dbConn.escape(req.body.password)};`,
     (err, result) => {
       // user does not exists
       if (err) {
