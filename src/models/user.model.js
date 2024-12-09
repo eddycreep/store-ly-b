@@ -22,7 +22,7 @@ User.InsertAuditLog = (req, result) => {
 
 User.addNewMember = (req, result) => {
     const { emp_name, emp_surname, id_no, phone_number, email_address, role } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.user(emp_name, emp_surname, id_no, phone_number, email_address, role) VALUES(?, ?, ?, ?, ?, ?, ?)', [emp_name, emp_surname, id_no, phone_number, email_address, role], (err, res) => {
+    dbConn.query('INSERT INTO loyalty_program.user(emp_name, emp_surname, id_no, phone_number, email_address, role) VALUES(?, ?, ?, ?, ?, ?, ?)', [emp_name, emp_surname, id_no, phone_number, email_address, role], (err, res) => {
         if (!(err === null)) {
             console.log('Error while inserting data new sign-up member: ' + err);
             result(null, err);

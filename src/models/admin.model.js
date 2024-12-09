@@ -11,7 +11,7 @@ var Admin = function (user) {
 };
 
 Admin.getReviews = (result) => {
-    dbConn.query('SELECT id, client_name, client_image, product, rating, date, comment FROM store_loyalty.tblproductreviews', (err, res) => {
+    dbConn.query('SELECT id, client_name, client_image, product, rating, date, comment FROM loyalty_program.tblproductreviews', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting customer product reviews' + err);
             result(null, err);
@@ -72,7 +72,7 @@ Admin.getReviews = (result) => {
  */
 Admin.saveSpecial = (req, result) => {
     const { specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblspecials (special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
+    dbConn.query('INSERT INTO loyalty_program.tblspecials (special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive) VALUES(?, ?, ?, ?, ?, ?, ?, ?)', [specialName, special, specialType, storeId, startDate, expiryDate, specialValue, isActive], (err, res) => {
         if (err) {
             console.log('Error while saving the Special:' + err);
             result(err, null);
@@ -102,7 +102,7 @@ Admin.saveSpecial = (req, result) => {
  *                  type: number
  */
 Admin.getSpecialID = (req, result) => {
-    dbConn.query('SELECT special_id FROM store_loyalty.tblspecials WHERE special_name = ?', [req.params.special_name], (err, res) => {
+    dbConn.query('SELECT special_id FROM loyalty_program.tblspecials WHERE special_name = ?', [req.params.special_name], (err, res) => {
         if (err) {
             console.log('Error while getting the special id' + err);
             result(null, err);
@@ -140,7 +140,7 @@ Admin.getSpecialID = (req, result) => {
  */
 Admin.saveProductSpecial = (req, result) => {
     const { special_id, product_description, special_price } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblspecialitems(special_id, product_description, special_price) VALUES(?, ?, ?)', [special_id, product_description, special_price], (err, res) => {
+    dbConn.query('INSERT INTO loyalty_program.tblspecialitems(special_id, product_description, special_price) VALUES(?, ?, ?)', [special_id, product_description, special_price], (err, res) => {
         if (err) {
             console.log('Error while adding the individual Products special:' + err);
             result(err, null);
@@ -184,7 +184,7 @@ Admin.saveProductSpecial = (req, result) => {
  */
 Admin.saveCombinedSpecial = (req, result) => {
     const { specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
-    dbConn.query('insert into store_loyalty.tblproductgroupspecial(SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive) values(?, ?, ?, ?, ?, ?, ?, ?)', [specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive ], (err, res) => {
+    dbConn.query('insert into loyalty_program.tblproductgroupspecial(SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive) values(?, ?, ?, ?, ?, ?, ?, ?)', [specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive ], (err, res) => {
         if (err) {
             console.log('Error while adding the Products special:' + err);
             result(err, null);
@@ -247,7 +247,7 @@ Admin.saveCombinedSpecial = (req, result) => {
  */
 Admin.updateSpecial = (req, result) => {
     const { special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecials SET special_name = ?, special = ?, special_type = ?, store_id = ?, start_date = ?, expiry_date = ?, special_value = ?, isActive = ? WHERE special_id = ?`, [special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive, req.params.special_id], (err, res) => {
+    dbConn.query(`UPDATE loyalty_program.tblspecials SET special_name = ?, special = ?, special_type = ?, store_id = ?, start_date = ?, expiry_date = ?, special_value = ?, isActive = ? WHERE special_id = ?`, [special_name, special, special_type, store_id, start_date, expiry_date, special_value, isActive, req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while getting all upcoming product group specials' + err);
             result(null, err);
@@ -283,7 +283,7 @@ Admin.updateSpecial = (req, result) => {
  */
 Admin.updateSpecialItem = (req, result) => {
     const { product_description, special_price } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecialitems SET product_description = ?, special_price = ? WHERE special_id = ?`, [product_description, special_price, req.params.special_id], (err, res) => {
+    dbConn.query(`UPDATE loyalty_program.tblspecialitems SET product_description = ?, special_price = ? WHERE special_id = ?`, [product_description, special_price, req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Group Product x Price' + err);
             result(null, err);
@@ -323,7 +323,7 @@ Admin.updateSpecialItem = (req, result) => {
  */
 Admin.updateCombinedSpecialItems = (req, result) => {
     const { special_group_id, product_description, special_price } = req.body;
-    dbConn.query(`UPDATE store_loyalty.tblspecials_combinedgroup SET special_group_id = ?, product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [special_group_id, product_description, special_price, req.params.special_id], (err, res) => {
+    dbConn.query(`UPDATE loyalty_program.tblspecials_combinedgroup SET special_group_id = ?, product_description = ?, special_price = ? WHERE special_id = ? AND product_description = ?`, [special_group_id, product_description, special_price, req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Combined Special Items' + err);
             result(null, err);
@@ -347,7 +347,7 @@ Admin.updateCombinedSpecialItems = (req, result) => {
  *           example: "Special deleted successfully"
  */
 Admin.deleteSpecial = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblspecials WHERE special_id = ?', [req.params.special_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblspecials WHERE special_id = ?', [req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while removing the Reward:' + err);
             result(err, null);
@@ -370,7 +370,7 @@ Admin.deleteSpecial = (req, result) => {
  *           example: "Special item deleted successfully"
  */
 Admin.deleteSpecialItem = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblspecialitems WHERE special_id = ?', [req.params.special_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblspecialitems WHERE special_id = ?', [req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while removing the Reward:' + err);
             result(err, null);
@@ -393,7 +393,7 @@ Admin.deleteSpecialItem = (req, result) => {
  *           example: "Special item deleted successfully"
  */
 Admin.deleteCombinedSpecialItems = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblspecials_combinedgroup WHERE special_id = ?', [req.params.special_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblspecials_combinedgroup WHERE special_id = ?', [req.params.special_id], (err, res) => {
         if (err) {
             console.log('Error while removing the Reward:' + err);
             result(err, null);
@@ -407,7 +407,7 @@ Admin.deleteCombinedSpecialItems = (req, result) => {
 
 Admin.saveCombinedSpecial = (req, result) => {
     const { specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive } = req.body;
-    dbConn.query('insert into store_loyalty.tblproductgroupspecial(SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive) values(?, ?, ?, ?, ?, ?, ?, ?)', [specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive ], (err, res) => {
+    dbConn.query('insert into loyalty_program.tblproductgroupspecial(SpecialGroupID, Product, Special, SpecialPrice, SpecialType, StartDate, ExpiryDate, isActive) values(?, ?, ?, ?, ?, ?, ?, ?)', [specialGroupID, product, special, specialPrice, specialType, startDate, expiryDate, isActive ], (err, res) => {
         if (err) {
             console.log('Error while adding the Products special:' + err);
             result(err, null);
@@ -471,7 +471,7 @@ Admin.saveCombinedSpecial = (req, result) => {
  *           description: Status of the reward (1 for active, 0 for inactive)
  */
 Admin.getAllRewards = (result) => {
-    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM store_loyalty.tblrewards', (err, res) => {
+    dbConn.query('SELECT reward_id, reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive FROM loyalty_program.tblrewards', (err, res) => {
         if (err) {
             console.log('Error while fetching the all Rewards:' + err);
             result(err, null);
@@ -544,7 +544,7 @@ Admin.getAllRewards = (result) => {
  */
 Admin.saveReward = (req, result) => {
     const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, loyalty_tier, age_group, isActive)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive], (err, res) => {
+    dbConn.query('INSERT INTO loyalty_program.tblrewards(reward_title, description, reward, reward_type, reward_price, store_id, start_date, expiry_date, loyalty_tier, age_group, isActive)VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive], (err, res) => {
         if (err) {
             console.log('Error while adding the Alternative Rewads:' + err);
             result(err, null);
@@ -630,7 +630,7 @@ Admin.saveReward = (req, result) => {
  */
 Admin.updateReward = (req, result) => {
     const { reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive } = req.body;
-    dbConn.query('UPDATE store_loyalty.tblrewards SET reward_title = ?, description = ?, reward = ?, reward_type = ?, reward_price = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, loyalty_tier = ?, age_group = ?, isActive = ? WHERE reward_id = ?', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive, req.params.reward_id], (err, res) => {
+    dbConn.query('UPDATE loyalty_program.tblrewards SET reward_title = ?, description = ?, reward = ?, reward_type = ?, reward_price = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, loyalty_tier = ?, age_group = ?, isActive = ? WHERE reward_id = ?', [reward_title, description, reward, reward_type, reward_price, store_id, region, start_date, expiry_date, loyalty_tier, age_group, isActive, req.params.reward_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Alternative Rewads:' + err);
             result(err, null);
@@ -642,7 +642,7 @@ Admin.updateReward = (req, result) => {
 }
 
 Admin.deleteReward = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblrewards WHERE reward_id = ?', [req.params.reward_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblrewards WHERE reward_id = ?', [req.params.reward_id], (err, res) => {
         if (err) {
             console.log('Error while removing the Reward:' + err);
             result(err, null);
@@ -687,7 +687,7 @@ Admin.deleteReward = (req, result) => {
  *           description: Status of the survey (1 for active, 0 for inactive)
  */
 Admin.getAllSurveys = (result) => {
-    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, loyalty_tier, start_date, expiry_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
+    dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, region, loyalty_tier, start_date, expiry_date, isActive FROM loyalty_program.tblsurvey', (err, res) => {
         if (err) {
             console.log('Error while Fetching all Surveys:' + err);
             result(err, null);
@@ -745,7 +745,7 @@ Admin.getAllSurveys = (result) => {
  */
 Admin.saveSurvey = (req, result) => {
     const { survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive } = req.body;
-    dbConn.query('INSERT INTO store_loyalty.tblsurvey(survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive], (err, res) => {
+    dbConn.query('INSERT INTO loyalty_program.tblsurvey(survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive) VALUES(?, ?, ?, ?, ?, ?, ?)', [survey_title, survey_category, store_id, loyalty_tier, start_date, expiry_date, isActive], (err, res) => {
         if (err) {
             console.log('Error while saving the Survey:' + err);
             result(err, null);
@@ -757,7 +757,7 @@ Admin.saveSurvey = (req, result) => {
 }
 
 Admin.getSurveyID = (req, result) => {
-    dbConn.query('SELECT survey_id FROM store_loyalty.tblsurvey where survey_title = ?', [req.params.survey_title], (err, res) => {
+    dbConn.query('SELECT survey_id FROM loyalty_program.tblsurvey where survey_title = ?', [req.params.survey_title], (err, res) => {
         if (err) {
             console.log('Error while getting the survey id' + err);
             result(null, err);
@@ -796,7 +796,7 @@ Admin.getSurveyID = (req, result) => {
  */
 Admin.saveSurveyQuestions = (req, result) => {
     const { survey_id, question_text, question_type } = req.body;
-    dbConn.query('INSERT store_loyalty.tblsurvey_questions(survey_id, question_text, question_type)VALUES(?, ?, ?)', [survey_id, question_text, question_type], (err, res) => {
+    dbConn.query('INSERT loyalty_program.tblsurvey_questions(survey_id, question_text, question_type)VALUES(?, ?, ?)', [survey_id, question_text, question_type], (err, res) => {
         if (err) {
             console.log('Error while saving the Survey Questions:' + err);
             result(err, null);
@@ -870,7 +870,7 @@ Admin.saveSurveyQuestions = (req, result) => {
  */
 Admin.updateSurvey = (req, result) => {
     const { survey_title, survey_category, store_id, region, start_date, expiry_date, isActive } = req.body;
-    dbConn.query('UPDATE store_loyalty.tblsurvey SET survey_title = ?, survey_category = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, isActive = ? WHERE survey_id = ?', [survey_title, survey_category, store_id, region, start_date, expiry_date, isActive, req.params.survey_id], (err, res) => {
+    dbConn.query('UPDATE loyalty_program.tblsurvey SET survey_title = ?, survey_category = ?, store_id = ?, region = ?, start_date = ?, expiry_date = ?, isActive = ? WHERE survey_id = ?', [survey_title, survey_category, store_id, region, start_date, expiry_date, isActive, req.params.survey_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Alternative Rewads:' + err);
             result(err, null);
@@ -944,7 +944,7 @@ Admin.updateSurvey = (req, result) => {
  */
 Admin.updateSurveyQuestions = (req, result) => {
     const { question_text, question_type } = req.body;
-    dbConn.query('UPDATE store_loyalty.tblsurvey_questions SET question_text = ?, question_type = ? WHERE survey_id = ?', [question_text, question_type, req.params.survey_id], (err, res) => {
+    dbConn.query('UPDATE loyalty_program.tblsurvey_questions SET question_text = ?, question_type = ? WHERE survey_id = ?', [question_text, question_type, req.params.survey_id], (err, res) => {
         if (err) {
             console.log('Error while updating the Alternative Rewads:' + err);
             result(err, null);
@@ -967,7 +967,7 @@ Admin.updateSurveyQuestions = (req, result) => {
  *           example: "Survey deleted successfully"
  */
 Admin.deleteSurvey = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblsurvey WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblsurvey WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
         if (err) {
             console.log('Error while deleting the Survey:' + err);
             result(err, null);
@@ -990,7 +990,7 @@ Admin.deleteSurvey = (req, result) => {
  *           example: "Survey Questions deleted successfully"
  */
 Admin.deleteSurveyQuestions = (req, result) => {
-    dbConn.query('DELETE FROM store_loyalty.tblsurvey_questions WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
+    dbConn.query('DELETE FROM loyalty_program.tblsurvey_questions WHERE survey_id = ?', [req.params.survey_id], (err, res) => {
         if (err) {
             console.log('Error while deleting the Survey Questions:' + err);
             result(err, null);
@@ -1002,7 +1002,7 @@ Admin.deleteSurveyQuestions = (req, result) => {
 }
 
 // Admin.getActiveSurveys = (req, result) => {
-//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey WHERE isActive = 1', (err, res) => {
+//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM loyalty_program.tblsurvey WHERE isActive = 1', (err, res) => {
 //         if (err) {
 //             console.log('Error while Fetching all Active Surveys:' + err);
 //             result(err, null);
@@ -1014,7 +1014,7 @@ Admin.deleteSurveyQuestions = (req, result) => {
 // }
 
 // Admin.getAllSurveys = (req, result) => {
-//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM store_loyalty.tblsurvey', (err, res) => {
+//     dbConn.query('SELECT survey_id, survey_title, survey_category, store_id, creation_date, isActive FROM loyalty_program.tblsurvey', (err, res) => {
 //         if (err) {
 //             console.log('Error while Fetching all Surveys:' + err);
 //             result(err, null);

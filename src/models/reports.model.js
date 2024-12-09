@@ -16,7 +16,7 @@ var Reports = function (user) {
 };
 
 Reports.getLoyaltyClients = (result) => {
-    dbConn.query('SELECT id, name, surname, id_number, mobile_number, age, gender, birthday, ethnicity, employment_status, loyalty, sign_up_date FROM store_loyalty.tblclients WHERE loyalty = 1', (err, res) => {
+    dbConn.query('SELECT id, name, surname, id_number, mobile_number, age, gender, birthday, ethnicity, employment_status, loyalty, sign_up_date FROM loyalty_program.tblclients WHERE loyalty = 1', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting the loyalty clients:' + err);
             result(null, err);
@@ -27,7 +27,7 @@ Reports.getLoyaltyClients = (result) => {
 }
 
 Reports.getNonLoyaltyClients = (result) => {
-    dbConn.query('SELECT id, name, surname, id_number, mobile_number, age, gender, birthday, ethnicity, employment_status, loyalty, sign_up_date FROM store_loyalty.tblclients WHERE loyalty = 0', (err, res) => {
+    dbConn.query('SELECT id, name, surname, id_number, mobile_number, age, gender, birthday, ethnicity, employment_status, loyalty, sign_up_date FROM loyalty_program.tblclients WHERE loyalty = 0', (err, res) => {
         if (!(err === null)) {
             console.log('Error while getting the non loyalty clients:' + err);
             result(null, err);
