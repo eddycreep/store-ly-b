@@ -26,11 +26,6 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // setup the server port
 const port = process.env.SERVERPORT;
 
-app.get("*", async (req, res) => {
-    console.log(req.body);
-    res.send("HELLO GET");
-})
-
 
 const UserRoutes = require('./src/routes/user.route')
 app.use('/user', UserRoutes);
@@ -48,6 +43,11 @@ const BasketRoutes = require('./src/routes/basket.route')
 app.use('/basket', BasketRoutes);
 
 console.log('SERVERPORT:', process.env.SERVERPORT);  // Debugging line4
+
+app.get("/", async (req, res) => {
+    console.log(req.body);
+    res.send("HELLO GET");
+})
 
 // listen to the port
 app.listen(port, () => {
