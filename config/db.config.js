@@ -13,7 +13,8 @@ function connectToDatabase() {
         user: process.env.USER,
         password: process.env.PASSWORD,
         database: process.env.DATABASE,
-        ssl: false
+        ssl: false,
+        connectTimeout: 10000 // 10 seconds
     });
 
     dbConn.connect((error) => {
