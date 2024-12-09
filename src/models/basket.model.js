@@ -398,7 +398,6 @@ Basket.saveFinalTransaction = (basketid, customerid, product, quantity, sellingP
 
 module.exports = Basket;
 
-
 // Basket.addTierReward = () => {
 //     const { loyalty_tier, eligibility, rewards, discounts, min_spending_amount, max_spending_amount } = req.body
 //         dbConn.query('INSERT INTO loyalty_program.tblcustomertiers(loyalty_tier, eligibility, rewards, discounts, min_spending_amount, max_spending_amount)VALUES(?, ?, ?, ?, ?, ?)', [loyalty_tier, eligibility, rewards, discounts, min_spending_amount, max_spending_amount], (err, res) => {
