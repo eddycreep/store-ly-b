@@ -1,23 +1,23 @@
 {
-    "version": 2,
-    "builds": [
-        {
-            "src": "./index.js",
-            "use": "@vercel/node"
-        }
-    ],
-    "routes": [
-        {
-          "src": "/docs/(.*)",
-          "dest": "/docs/$1"
-        },
-        {
+  "version": 2,
+  "builds": [
+      {
+          "src": "./index.js",
+          "use": "@vercel/node"
+      }
+  ],
+  "routes": [
+      {
           "src": "/docs",
           "dest": "/docs/index.html"
-        },
-        {
+      },
+      {
+          "src": "/docs/(.*)",
+          "dest": "/public/docs/$1"
+      },
+      {
           "src": "/docs.json",
           "dest": "/api/docs-json"
-        }
-      ]
+      }
+  ]
 }
