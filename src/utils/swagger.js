@@ -1,4 +1,3 @@
-const express = require('express');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { version } = require('../../package.json');
@@ -31,7 +30,13 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 function swaggerDocs(app, port) {
-    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+        swaggerOptions: {
+            url: '/docs.json', // Use this endpoint to fetch Swagger JSON
+            customCssUrl: '/swagger-static/swagger-ui.css',
+            customJs: '/swagger-static/swagger-initializer.js',
+        }
+    }));
 
     app.get('/docs.json', (req, res) => {
         res.setHeader('Content-Type', 'application/json');
