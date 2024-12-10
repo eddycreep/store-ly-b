@@ -1,29 +1,49 @@
 const mysql = require('mysql2');
 require('dotenv').config({ path: '../configuration.env' });
 
-const dbConn = mysql.createConnection({
+// Database connection configuration
+const dbConfig = {
     host: process.env.HOST,
     port: process.env.PORT,
     user: process.env.USER,
     password: process.env.PASSWORD,
     ssl: false
-});
+};
 
-dbConn.connect(function (error) {
-    console.log('HOST:', process.env.HOST);
-    console.log('PORT:', process.env.PORT);
-    console.log('USER:', process.env.USER);
-    console.log('PASSWORD:', process.env.PASSWORD);
-    console.log('DATABASE', process.env.DATABASE);
+// Maximum number of retry attempts
+const MAX_RETRIES = 5;
 
-    if (error) {
-        console.error('error connecting:' + error.stack);
-        process.exit(1);
-    }
-    else {
-        console.log('DB connected successfully');
-    }
+// Retry delay in milliseconds
+const RETRY_DELAY = 2000;
 
-});
+// Function to connect to the database with retries
+function connectWithRetry(retryCount = 0) {
+    const dbConn = mysql.createConnection(dbConfig);
 
-module.exports = dbConn;
+    dbConn.connect((error) => {
+        console.log('HOST:', dbConfig.host);
+        console.log('PORT:', dbConfig.port);
+        console.log('USER:', dbConfig.user);
+        console.log('PASSWORD:', dbConfig.password);
+        console.log('DATABASE:', process.env.DATABASE);
+
+        if (error) {
+            console.error(`Error connecting: ${error.stack}`);
+            retryCount++;
+
+            if (retryCount < MAX_RETRIES) {
+                console.log(`Retrying to connect (${retryCount}/${MAX_RETRIES}) in ${RETRY_DELAY / 1000} seconds...`);
+                setTimeout(() => connectWithRetry(retryCount), RETRY_DELAY);
+            } else {
+                console.error('Max retries reached. Exiting application.');
+                process.exit(1);
+            }
+        } else {
+            console.log('DB connected successfully');
+            module.exports = dbConn; // Export connection only after successful connection
+        }
+    });
+}
+
+// Start the connection process
+connectWithRetry();
