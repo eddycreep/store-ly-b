@@ -7,6 +7,17 @@
         }
     ],
     "routes": [
-        { "src": "/docs", "dest": "/api/index.js" }
-    ]
+        {
+          "src": "/docs/(.*)",
+          "dest": "/docs/$1"
+        },
+        {
+          "src": "/docs",
+          "dest": "/docs/index.html"
+        },
+        {
+          "src": "/docs.json",
+          "dest": "/api/docs-json"
+        }
+      ]
 }
