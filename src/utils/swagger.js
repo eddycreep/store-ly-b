@@ -30,24 +30,20 @@ const options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 function swaggerDocs(app, port) {
-    // Serve Swagger UI with proper configuration
-    app.use(
-      '/docs',
-      swaggerUi.serve,
-      swaggerUi.setup(swaggerSpec, {
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
         swaggerOptions: {
-          url: '/docs.json', // URL for the Swagger spec
-        },
-      })
-    );
-  
-    // Serve the Swagger spec JSON
+            url: '/docs.json', // Use this endpoint to fetch Swagger JSON
+            customCssUrl: '/swagger-static/swagger-ui.css',
+            customJs: '/swagger-static/swagger-initializer.js',
+        }
+    }));
+
     app.get('/docs.json', (req, res) => {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(swaggerSpec);
+        res.setHeader('Content-Type', 'application/json');
+        res.send(swaggerSpec);
     });
-  
+
     console.log(`Docs available at http://localhost:${port}/docs`);
-  }
-  
-  module.exports = swaggerDocs;
+}
+
+module.exports = swaggerDocs;

@@ -27,11 +27,11 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // setup the server port
 const port = process.env.SERVERPORT;
 
-// Static file serving for Swagger UI
-//app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
+// Middleware for serving static files
+app.use('/docs-static', express.static(path.join(__dirname, 'public/docs')));
 
-// Serve static files for Swagger UI
-app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
+// Load Swagger documentation
+swaggerDocs(app, process.env.PORT || 3000);
 
 const UserRoutes = require('./src/routes/user.route')
 app.use('/user', UserRoutes);
@@ -55,10 +55,7 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-
-// Swagger docs
-swaggerDocs(app, process.env.SERVERPORT || 3000);
-// swaggerDocs(app, port)
+swaggerDocs(app, port)
 
 // listen to the port
 app.listen(port, () => {
