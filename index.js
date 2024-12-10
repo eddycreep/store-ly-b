@@ -30,8 +30,8 @@ const port = process.env.SERVERPORT;
 // Static file serving for Swagger UI
 //app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
 
-// Static file serving for Swagger UI
-app.use('/swagger-static', express.static(path.join(__dirname, 'public/docs')));
+// Serve static files for Swagger UI
+app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
 
 const UserRoutes = require('./src/routes/user.route')
 app.use('/user', UserRoutes);
@@ -55,7 +55,10 @@ app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-swaggerDocs(app, port)
+
+// Swagger docs
+swaggerDocs(app, process.env.SERVERPORT || 3000);
+// swaggerDocs(app, port)
 
 // listen to the port
 app.listen(port, () => {
