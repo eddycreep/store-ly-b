@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const swaggerDocs = require('./src/utils/swagger.js');
+const path = require('path'); // Required to serve static files
 
 const corsOptions = {
     origin: '*',
@@ -26,6 +27,8 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // setup the server port
 const port = process.env.SERVERPORT;
 
+// Static file serving for Swagger UI
+app.use('/docs', express.static(path.join(__dirname, 'public/docs')));
 
 const UserRoutes = require('./src/routes/user.route')
 app.use('/user', UserRoutes);
@@ -44,10 +47,10 @@ app.use('/basket', BasketRoutes);
 
 console.log('SERVERPORT:', process.env.SERVERPORT);  // Debugging line4
 
-app.get("/", async (req, res) => {
-    console.log(req.body);
-    res.send("HELLO GET");
-})
+// Base route for testing
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
 
 // listen to the port
 app.listen(port, () => {
